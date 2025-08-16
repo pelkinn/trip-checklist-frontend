@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
@@ -11,13 +10,14 @@ export default defineNuxtConfig({
       yandexMetrika: {
         id: 103233734,
       },
+      apiBaseUrl: process.env.BASE_URL || 'http://localhost:3000',
     },
   },
 
   app: {
     head: {
       htmlAttrs: { lang: "ru" },
-      title: "TripSplit — Калькулятор совместных расходов",
+      title: "Trip Checklist — Персональные чеклисты путешествий",
       meta: [
         { charset: "utf-8" },
         { name: "language", content: "ru" },
@@ -26,23 +26,23 @@ export default defineNuxtConfig({
         {
           name: "description",
           content:
-            "TripSplit — калькулятор совместных расходов. Безлимит участников, офлайн‑режим и мгновенный расчёт долгов с копированием результата в один клик.",
+            "Trip Checklist — создавайте персональные чеклисты для ваших путешествий. Организуйте поездки с помощью удобных списков.",
         },
 
         {
           property: "og:title",
-          content: "TripSplit — калькулятор совместных расходов",
+          content: "Trip Checklist — Персональные чеклисты путешествий",
         },
         {
           property: "og:description",
           content:
-            "Простой способ разделить расходы между участниками поездки.",
+            "Создавайте персональные чеклисты для ваших путешествий.",
         },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: "https://trip-split.ru" },
+        { property: "og:url", content: "https://trip-checklist.ru" },
         {
           property: "og:image",
-          content: "https://trip-split.ru/pwa-192x192.png",
+          content: "https://trip-checklist.ru/pwa-192x192.png",
         },
       ],
       link: [
@@ -54,8 +54,10 @@ export default defineNuxtConfig({
 
   css: ["~/assets/style/main.scss"],
 
-  build: {
-    transpile: ["vuetify"],
+  components: {
+    dirs: [
+      '~/components'
+    ]
   },
 
   modules: [
@@ -63,19 +65,12 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "~/modules/yandexMetrika",
     "@nuxtjs/sitemap",
-    (_options, nuxt) => {
-      nuxt.hooks.hook("vite:extendConfig", (config) => {
-        // @ts-expect-error
-        config.plugins.push(vuetify({ autoImport: true }));
-      });
-    },
   ],
 
   vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
+    define: {
+      __VUE_OPTIONS_API__: true,
+      __VUE_PROD_DEVTOOLS__: false,
     },
   },
 
@@ -86,12 +81,12 @@ export default defineNuxtConfig({
       navigateFallback: null,
     },
     manifest: {
-      name: "TripSplit",
-      short_name: "TripSplit",
-      description: "Рассчет долгов при совместных тратах",
+      name: "Trip Checklist",
+      short_name: "Trip Checklist",
+      description: "Персональные чеклисты путешествий",
       lang: "ru",
-      theme_color: "#e0f7fa",
-      background_color: "#e0f7fa",
+      theme_color: "#667eea",
+      background_color: "#667eea",
       icons: [
         {
           src: "pwa-192x192.png",
@@ -108,7 +103,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: "https://trip-split.ru",
-    name: "TripSplit — калькулятор совместных расходов",
+    url: "https://trip-checklist.ru",
+    name: "Trip Checklist — Персональные чеклисты путешествий",
   },
 });

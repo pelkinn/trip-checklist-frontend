@@ -1,19 +1,161 @@
-@forward "@fontsource/ruda/400.css";
-@forward "@fontsource/ruda/500.css";
-@forward "@fontsource/ruda/700.css";
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;500;600;700&display=swap');
 
-body,
-.text-h5,
-.text-h6 {
-  font-family: "Ruda" !important;
+// Reset and base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body {
-  .v-btn .v-btn__content {
-    letter-spacing: normal !important;
-  }
+html, body {
+  height: 100%;
+  font-family: 'Ruda', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
 
-  .v-text-field .v-field {
-    border-radius: 12px;
+#__nuxt {
+  height: 100%;
+}
+
+// Variables
+:root {
+  --primary-color: #667eea;
+  --primary-dark: #5a6fd8;
+  --secondary-color: #764ba2;
+  --success-color: #4caf50;
+  --error-color: #f44336;
+  --warning-color: #ff9800;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-light: #999;
+  --background: #fff;
+  --background-secondary: #f5f5f5;
+  --border-color: #e0e0e0;
+  --border-radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+}
+
+// Utility classes
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.fill-height {
+  min-height: 100vh;
+}
+
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-5 { margin-bottom: 20px; }
+.mb-6 { margin-bottom: 24px; }
+.mb-8 { margin-bottom: 32px; }
+
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-5 { margin-top: 20px; }
+.mt-6 { margin-top: 24px; }
+
+.mr-1 { margin-right: 4px; }
+.mr-2 { margin-right: 8px; }
+.mr-3 { margin-right: 12px; }
+.mr-4 { margin-right: 16px; }
+
+.ml-1 { margin-left: 4px; }
+.ml-2 { margin-left: 8px; }
+.ml-3 { margin-left: 12px; }
+.ml-4 { margin-left: 16px; }
+
+.pa-1 { padding: 4px; }
+.pa-2 { padding: 8px; }
+.pa-3 { padding: 12px; }
+.pa-4 { padding: 16px; }
+.pa-5 { padding: 20px; }
+.pa-6 { padding: 24px; }
+
+.pt-0 { padding-top: 0; }
+.pb-0 { padding-bottom: 0; }
+.pl-0 { padding-left: 0; }
+.pr-0 { padding-right: 0; }
+
+// Typography
+.text-h1 { font-size: 40px; font-weight: 700; }
+.text-h2 { font-size: 32px; font-weight: 600; }
+.text-h3 { font-size: 28px; font-weight: 600; }
+.text-h4 { font-size: 24px; font-weight: 600; }
+.text-h5 { font-size: 20px; font-weight: 600; }
+.text-h6 { font-size: 16px; font-weight: 600; }
+
+.text-body-1 { font-size: 16px; }
+.text-body-2 { font-size: 14px; }
+
+.font-weight-bold { font-weight: 700; }
+.font-weight-medium { font-weight: 500; }
+
+.text-primary { color: var(--primary-color); }
+.text-secondary { color: var(--text-secondary); }
+.text-light { color: var(--text-light); }
+.text-error { color: var(--error-color); }
+.text-success { color: var(--success-color); }
+
+// Responsive
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
   }
+  
+  .text-h1 { font-size: 32px; }
+  .text-h2 { font-size: 28px; }
+  .text-h3 { font-size: 24px; }
+  .text-h4 { font-size: 20px; }
+  .text-h5 { font-size: 18px; }
 }

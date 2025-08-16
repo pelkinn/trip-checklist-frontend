@@ -1,12 +1,12 @@
 <template>
-  <v-app>
-    <v-main class="main">
-      <VContainer max-width="1200" class="mb-15">
+  <div>
+    <main class="main">
+      <div max-width="1200" class="mb-15">
         <NuxtPage />
-      </VContainer>
+      </div>
       <div class="text-center pa-2 mt-auto" />
-    </v-main>
-  </v-app>
+    </main>
+  </div>
   <VitePwaManifest />
 </template>
 
