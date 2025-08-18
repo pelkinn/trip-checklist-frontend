@@ -79,9 +79,9 @@ const emit = defineEmits<{
   'back-to-login': []
 }>()
 
-// Локальное состояние для тестирования
-const isLoading = ref(false)
-const error = ref<string | null>(null)
+// Используем store для авторизации
+const authStore = useAuthStore()
+const { isLoading, error } = storeToRefs(authStore)
 const isSuccess = ref(false)
 
 // Форма
@@ -132,16 +132,14 @@ const handleSubmit = async () => {
     return
   }
   
-  isLoading.value = true
+  await authStore.forgotPassword(form.email)
   
-  // Имитация загрузки
-  setTimeout(() => {
-    console.log('Попытка восстановления пароля:', form.email)
-    isLoading.value = false
+  // Если нет ошибки, значит письмо отправлено успешно
+  if (!authStore.error) {
     isSuccess.value = true
     // Очищаем форму
     form.email = ''
-  }, 1000)
+  }
 }
 </script>
 

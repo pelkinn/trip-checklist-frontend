@@ -91,8 +91,9 @@ const emit = defineEmits<{
   'forgot-password': []
 }>()
 
-// Используем composable авторизации
-const { login, isLoading, error, clearError } = useAuth()
+// Используем store для авторизации
+const authStore = useAuthStore()
+const { isLoading, error } = storeToRefs(authStore)
 
 // Форма
 const form = reactive({
@@ -153,15 +154,18 @@ const handleSubmit = async () => {
     return
   }
   
-  const success = await login({
-    email: form.email,
-    password: form.password
-  })
+  await authStore.login(form.email, form.password)
   
-  if (success) {
-    // Успешный вход - можно добавить редирект или уведомление
-    console.log('Успешный вход')
+  // Если нет ошибки, значит вход успешен
+  if (!authStore.error) {
+    // Успешный вход - редирект на страницу чеклистов
+    navigateTo('/checklists')
   }
+}
+
+// Очистка ошибки
+const clearError = () => {
+  authStore.clearError()
 }
 </script>
 

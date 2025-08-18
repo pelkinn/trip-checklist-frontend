@@ -1,16 +1,21 @@
 <template>
   <div class="auth-page">
-    <div class="auth-container">
-      <!-- Логотип и заголовок -->
-      <div class="auth-header text-center mb-8">
-        <div class="d-flex align-center justify-center mb-4">
-          <span class="auth-logo mr-2">📍</span>
-          <h1 class="text-h4 font-weight-bold">Trip Checklist</h1>
-        </div>
-        <h2 class="text-h5 text-secondary">
-          Организуйте поездку с персональными чеклистами
-        </h2>
-      </div>
+    <!-- Header -->
+    <LayoutAppHeader />
+    
+    <!-- Main Content -->
+    <main class="auth-main">
+      <div class="auth-container">
+                 <!-- Логотип и заголовок -->
+         <div class="auth-header">
+           <div class="auth-logo-container">
+             <span class="auth-logo">📍</span>
+             <h1 class="auth-title">Trip Checklist</h1>
+           </div>
+           <h2 class="auth-subtitle">
+             Организуйте поездку с персональными чеклистами
+           </h2>
+         </div>
       
       <!-- Формы авторизации -->
       <div class="auth-forms">
@@ -33,16 +38,19 @@
           @back-to-login="currentForm = 'login'"
         />
       </div>
-    </div>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 
-// Middleware для гостей
+// Middleware для гостей - перенаправляем авторизованных пользователей
 definePageMeta({
-  middleware: 'guest'
+  middleware: 'auth',
+  requireAuth: false, // Разрешаем доступ неавторизованным пользователям
+  redirectIfAuth: true // Перенаправляем авторизованных пользователей
 })
 
 // Текущая форма
@@ -60,11 +68,19 @@ useHead({
 <style scoped>
 .auth-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.auth-main {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 32px 16px;
 }
 
 .auth-container {
@@ -72,8 +88,31 @@ useHead({
   width: 100%;
 }
 
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.auth-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
 .auth-logo {
-  font-size: 2rem;
+  font-size: 32px;
+  margin-right: 8px;
 }
 
 .auth-forms {
@@ -98,8 +137,8 @@ useHead({
 }
 
 @media (max-width: 768px) {
-  .auth-page {
-    padding: 1rem;
+  .auth-main {
+    padding: 16px;
   }
   
   .auth-container {

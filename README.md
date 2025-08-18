@@ -50,14 +50,17 @@ npm run dev
 - `RegisterForm` - форма регистрации  
 - `ForgotPasswordForm` - форма восстановления пароля
 
-### Composable
+### Архитектура
 
-- `useAuth` - управление состоянием авторизации
+- **API Layer** - `useAuthApi`, `useChecklistsApi` - чистые API запросы
+- **Store Layer** - `useAuthStore`, `useChecklistsStore` - управление состоянием
+- **Components** - используют store для получения данных и действий
 
 ### Middleware
 
-- `auth` - защита маршрутов для авторизованных пользователей
-- `guest` - перенаправление авторизованных пользователей
+- `auth` - универсальный middleware для проверки авторизации
+  - По умолчанию защищает маршруты для авторизованных пользователей
+  - С параметром `redirectIfAuth: true` перенаправляет авторизованных пользователей
 
 ## Структура проекта
 
@@ -69,12 +72,16 @@ src/
 │       ├── RegisterForm.vue
 │       └── ForgotPasswordForm.vue
 ├── composables/
-│   └── useAuth.ts
+│   ├── useAuthApi.ts
+│   ├── useChecklistsApi.ts
+│   └── useApiConfig.ts
+├── stores/
+│   ├── auth.ts
+│   └── checklists.ts
 ├── config/
 │   └── api.ts
 ├── middleware/
-│   ├── auth.ts
-│   └── guest.ts
+│   └── auth.ts
 ├── pages/
 │   ├── index.vue
 │   └── auth.vue

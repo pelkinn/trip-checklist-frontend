@@ -65,6 +65,7 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "~/modules/yandexMetrika",
     "@nuxtjs/sitemap",
+    "@pinia/nuxt",
   ],
 
   vite: {

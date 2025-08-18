@@ -14,6 +14,6 @@
 .main {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+  background-color: #fff;
 }
 </style>

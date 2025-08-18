@@ -1,105 +1,234 @@
 <template>
   <div class="home-page">
     <!-- Header -->
-    <header class="app-header">
-      <div class="container">
-        <div class="d-flex align-center justify-between">
-          <div class="d-flex align-center">
-            <span class="app-logo mr-2">📍</span>
-            <span class="text-h6 font-weight-bold">Trip Checklist</span>
-          </div>
-          
-          <!-- Кнопки для авторизованных пользователей -->
-          <template v-if="isAuthenticated">
-            <UiBaseButton variant="text" class="mr-2">
-              {{ user?.email }}
-            </UiBaseButton>
-            <UiBaseButton variant="primary" @click="logout">
-              Выйти
-            </UiBaseButton>
-          </template>
-          
-          <!-- Кнопка входа для неавторизованных пользователей -->
-          <template v-else>
-            <UiBaseButton variant="primary" @click="goToAuth">
-              Войти
-            </UiBaseButton>
-          </template>
-        </div>
-      </div>
-    </header>
+    <LayoutAppHeader />
     
     <!-- Main Content -->
     <main class="main-content">
       <div class="container">
         <div class="content-wrapper">
-          <div class="text-center">
-            <h1 class="text-h3 font-weight-bold mb-4">
-              Добро пожаловать в Trip Checklist
+          <!-- Заголовок -->
+          <div class="welcome-content">
+            <h1 class="welcome-title">
+              Trip Checklist
             </h1>
-            
-            <p class="text-h6 text-secondary mb-8">
+            <p class="welcome-subtitle">
               Создавайте персональные чеклисты для ваших путешествий
             </p>
             
-            <!-- Контент для авторизованных пользователей -->
-            <template v-if="isAuthenticated">
-              <UiBaseCard class="profile-card" :elevation="2">
-                <h2 class="text-h5 mb-4">Ваш профиль</h2>
-                <div class="profile-list">
-                  <div class="profile-item">
-                    <span class="profile-icon">📧</span>
-                    <span>{{ user?.email }}</span>
-                  </div>
-                  <div class="profile-item">
-                    <span class="profile-icon">🛡️</span>
-                    <span>{{ user?.role }}</span>
-                  </div>
-                  <div class="profile-item">
-                    <span class="profile-icon">✅</span>
-                    <span>Email {{ user?.emailVerified ? 'подтвержден' : 'не подтвержден' }}</span>
-                  </div>
-                </div>
-                
-                <UiBaseButton variant="primary" size="large" class="mt-4">
-                  Создать чеклист
-                </UiBaseButton>
-              </UiBaseCard>
-            </template>
-            
-                                     <!-- Контент для неавторизованных пользователей -->
-            <template v-else>
-              <UiBaseCard class="welcome-card" :elevation="2">
-                <h2 class="text-h5 mb-4">Начните прямо сейчас</h2>
-                <p class="text-body-1 mb-6">
-                  Зарегистрируйтесь или войдите в систему, чтобы создавать персональные чеклисты для ваших путешествий.
-                </p>
-                
-                <div class="d-flex gap-4 justify-center">
-                  <UiBaseButton variant="primary" size="large" @click="goToAuth">
-                    Войти
-                  </UiBaseButton>
-                  <UiBaseButton variant="outline" size="large" @click="goToAuth">
-                    Регистрация
-                  </UiBaseButton>
-                </div>
-              </UiBaseCard>
-            </template>
+            <!-- Кнопки для авторизованных пользователей -->
+            <div v-if="isAuthenticated" class="user-actions">
+              <UiBaseButton variant="primary" size="large" @click="goToChecklists">
+                Мой личный кабинет
+              </UiBaseButton>
+            </div>
           </div>
-        </div>
+          
+                     <!-- Поиск шаблонных чеклистов (для всех пользователей) -->
+            <!-- Поиск шаблонных чеклистов -->
+            <div class="search-section">
+              <h2 class="search-title">Найдите подходящий чеклист</h2>
+              
+                             <form @submit.prevent="searchTemplate" class="search-form">
+                 <div class="form-row">
+                   <UiBaseSelect
+                     v-model="searchForm.tripTypeId"
+                     :options="tripTypeOptions"
+                     label="Тип поездки"
+                     placeholder="Выберите тип поездки"
+                     required
+                   />
+                   
+                   <UiBaseSelect
+                     v-model="searchForm.durationId"
+                     :options="durationOptions"
+                     label="Длительность"
+                     placeholder="Выберите длительность"
+                     required
+                   />
+                 </div>
+                
+                <UiBaseButton 
+                  type="submit" 
+                  variant="primary" 
+                  size="large"
+                  :disabled="isLoading || !searchForm.tripTypeId || !searchForm.durationId"
+                  class="search-button"
+                >
+                  {{ isLoading ? 'Поиск...' : 'Найти чеклист' }}
+                </UiBaseButton>
+              </form>
+            </div>
+            
+                         <!-- Сообщение об ошибке -->
+             <UiBaseAlert 
+               v-if="error" 
+               type="error" 
+               icon="⚠️"
+               closable
+               @close="checklistsStore.clearError()"
+               class="mb-4"
+             >
+               {{ error }}
+             </UiBaseAlert>
+             
+             <!-- Сообщение "не найдено" -->
+             <UiBaseAlert 
+               v-if="isNotFound" 
+               type="info" 
+               icon="🔍"
+               closable
+               @close="isNotFound = false"
+               class="mb-4"
+             >
+               Чеклист для выбранных параметров не найден. Попробуйте другие варианты типа поездки или длительности.
+             </UiBaseAlert>
+            
+            <!-- Результаты поиска -->
+            <div v-if="templateItems.length > 0" class="results-section">
+              <div class="results-header">
+                <h3 class="results-title">
+                  Чеклист для {{ getTripTypeName(searchForm.tripTypeId) }} 
+                  ({{ getDurationLabel(searchForm.durationId) }})
+                </h3>
+                <p class="results-count">
+                  {{ templateItems.length }} элементов
+                </p>
+              </div>
+              
+              <div class="template-items">
+                <div 
+                  v-for="item in templateItems" 
+                  :key="item.id"
+                  class="template-item"
+                >
+                  <span class="item-icon">📋</span>
+                  <span class="item-name">{{ item.name }}</span>
+                </div>
+              </div>
+              
+                             <div class="results-actions">
+                 <UiBaseButton variant="primary" size="large" @click="handleCreateChecklist">
+                   Создать мой чеклист
+                 </UiBaseButton>
+                 <UiBaseButton variant="outline" size="large" @click="clearSearch">
+                   Новый поиск
+                 </UiBaseButton>
+               </div>
+                         </div>
+         </div>
       </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-// Используем composable авторизации
-const { user, isAuthenticated, logout } = useAuth()
+// Используем store для авторизации
+const authStore = useAuthStore()
+const { user, isAuthenticated } = storeToRefs(authStore)
+
+// Используем store для работы с чеклистами
+const checklistsStore = useChecklistsStore()
+const { 
+  tripTypes, 
+  durations, 
+  templateItems,
+  isLoading,
+  error
+} = storeToRefs(checklistsStore)
+
+// Локальное состояние для "не найдено"
+const isNotFound = ref(false)
+
+// Состояние для поиска
+const searchForm = ref({
+  tripTypeId: '',
+  durationId: ''
+})
+
+// Загрузка данных при монтировании
+onMounted(async () => {
+  await Promise.all([
+    checklistsStore.fetchTripTypes(),
+    checklistsStore.fetchDurations()
+  ])
+})
+
+// Поиск шаблонного чеклиста
+const searchTemplate = async () => {
+  if (!searchForm.value.tripTypeId || !searchForm.value.durationId) return
+  
+  // Очищаем предыдущие ошибки и состояние "не найдено" перед новым поиском
+  checklistsStore.clearError()
+  isNotFound.value = false
+  
+  try {
+    await checklistsStore.fetchTemplateChecklist(
+      parseInt(searchForm.value.tripTypeId),
+      parseInt(searchForm.value.durationId)
+    )
+  } catch (err: any) {
+    if (err.notFound) {
+      isNotFound.value = true
+    }
+  }
+}
+
+// Очистка поиска
+const clearSearch = () => {
+  searchForm.value = { tripTypeId: '', durationId: '' }
+  checklistsStore.clearCurrentChecklist()
+  checklistsStore.clearError()
+  isNotFound.value = false
+}
+
+// Получение названия типа поездки
+const getTripTypeName = (checklistId: string | number) => {
+  const id = typeof checklistId === 'string' ? parseInt(checklistId) : checklistId
+  return checklistsStore.getTripTypeName(id)
+}
+
+// Получение названия длительности
+const getDurationLabel = (durationId: string | number) => {
+  const id = typeof durationId === 'string' ? parseInt(durationId) : durationId
+  return checklistsStore.getDurationLabel(id)
+}
+
+// Обработка создания чеклиста
+const handleCreateChecklist = () => {
+  if (isAuthenticated.value) {
+    // Если пользователь авторизован, переходим на страницу чеклистов
+    navigateTo('/checklists')
+  } else {
+    // Если не авторизован, переходим на страницу авторизации
+    navigateTo('/auth')
+  }
+}
 
 // Переход на страницу авторизации
 const goToAuth = () => {
   navigateTo('/auth')
 }
+
+// Переход в личный кабинет
+const goToChecklists = () => {
+  navigateTo('/checklists')
+}
+
+// Преобразование данных для селектов
+const tripTypeOptions = computed(() => 
+  tripTypes.value.map(type => ({
+    value: String(type.id),
+    label: type.name
+  }))
+)
+
+const durationOptions = computed(() => 
+  durations.value.map(duration => ({
+    value: String(duration.id),
+    label: duration.label
+  }))
+)
 
 // Устанавливаем мета-теги для страницы
 useHead({
@@ -117,25 +246,12 @@ useHead({
   flex-direction: column;
 }
 
-.app-header {
-  background-color: var(--background);
-  border-bottom: 1px solid var(--border-color);
-  padding: 1rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.app-logo {
-  font-size: 1.5rem;
-}
-
 .main-content {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 32px 0;
 }
 
 .content-wrapper {
@@ -143,45 +259,146 @@ useHead({
   width: 100%;
 }
 
-.profile-card,
-.welcome-card {
-  max-width: 500px;
-  margin: 0 auto;
+.welcome-content {
+  text-align: center;
+  margin-bottom: 48px;
 }
 
-.profile-list {
-  margin-bottom: 1.5rem;
+.welcome-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--primary-color);
 }
 
-.profile-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border-color);
+.welcome-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 24px;
 }
 
-.profile-item:last-child {
-  border-bottom: none;
+.user-actions {
+  text-align: center;
+  margin-top: 24px;
 }
 
-.profile-icon {
-  font-size: 1.25rem;
-  margin-right: 0.75rem;
-  width: 24px;
+.search-section {
+  margin-bottom: 32px;
+}
+
+.search-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
   text-align: center;
 }
 
-.gap-4 {
-  gap: 1rem;
+.search-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+
+.search-button {
+  width: 100%;
+}
+
+.results-section {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: var(--background-secondary);
+  border-radius: 12px;
+}
+
+.results-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.results-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.results-count {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.template-items {
+  margin-bottom: 24px;
+}
+
+.template-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.template-item:last-child {
+  margin-bottom: 0;
+}
+
+.item-icon {
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+.item-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.results-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 1rem 0;
+    padding: 16px 0;
   }
   
   .content-wrapper {
-    padding: 0 1rem;
+    padding: 0 16px;
+  }
+  
+  .welcome-title {
+    font-size: 28px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 16px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .results-actions {
+    flex-direction: column;
+  }
+  
+  .results-section {
+    margin: 0 16px;
   }
 }
 </style>

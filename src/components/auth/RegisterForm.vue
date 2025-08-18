@@ -102,9 +102,9 @@ const emit = defineEmits<{
   login: []
 }>()
 
-// Локальное состояние для тестирования
-const isLoading = ref(false)
-const error = ref<string | null>(null)
+// Используем store для авторизации
+const authStore = useAuthStore()
+const { isLoading, error } = storeToRefs(authStore)
 const isSuccess = ref(false)
 
 // Форма
@@ -191,18 +191,16 @@ const handleSubmit = async () => {
     return
   }
   
-  isLoading.value = true
+  await authStore.register(form.email, form.password)
   
-  // Имитация загрузки
-  setTimeout(() => {
-    console.log('Попытка регистрации:', form.email)
-    isLoading.value = false
+  // Если нет ошибки, значит регистрация успешна
+  if (!authStore.error) {
     isSuccess.value = true
     // Очищаем форму
     form.email = ''
     form.password = ''
     form.confirmPassword = ''
-  }, 1000)
+  }
 }
 </script>
 
