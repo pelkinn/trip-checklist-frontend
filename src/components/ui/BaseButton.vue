@@ -5,7 +5,7 @@
     :type="type"
     @click="handleClick"
   >
-    <span v-if="loading" class="button-loader"></span>
+    <span v-if="loading" class="button-loader" />
     <span v-else class="button-content">
       <slot />
     </span>
@@ -14,43 +14,43 @@
 
 <script setup lang="ts">
 interface Props {
-  variant?: 'primary' | 'secondary' | 'outline' | 'text' | 'error'
-  size?: 'small' | 'medium' | 'large'
-  disabled?: boolean
-  loading?: boolean
-  block?: boolean
-  type?: 'button' | 'submit' | 'reset'
+  variant?: "primary" | "secondary" | "outline" | "text" | "error";
+  size?: "small" | "medium" | "large";
+  disabled?: boolean;
+  loading?: boolean;
+  block?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'primary',
-  size: 'medium',
+  variant: "primary",
+  size: "medium",
   disabled: false,
   loading: false,
   block: false,
-  type: 'button'
-})
+  type: "button",
+});
 
 const emit = defineEmits<{
-  click: [event: MouseEvent]
-}>()
+  click: [event: MouseEvent];
+}>();
 
 const buttonClasses = computed(() => [
-  'base-button',
+  "base-button",
   `base-button--${props.variant}`,
   `base-button--${props.size}`,
   {
-    'base-button--block': props.block,
-    'base-button--disabled': props.disabled,
-    'base-button--loading': props.loading
-  }
-])
+    "base-button--block": props.block,
+    "base-button--disabled": props.disabled,
+    "base-button--loading": props.loading,
+  },
+]);
 
 const handleClick = (event: MouseEvent) => {
   if (!props.disabled && !props.loading) {
-    emit('click', event)
+    emit("click", event);
   }
-}
+};
 </script>
 
 <style scoped>
@@ -100,7 +100,7 @@ const handleClick = (event: MouseEvent) => {
 }
 
 .base-button--secondary:hover:not(.base-button--disabled) {
-  background-color: #6a4190;
+  background-color: #9a5318;
   box-shadow: var(--shadow-hover);
 }
 
@@ -173,7 +173,11 @@ const handleClick = (event: MouseEvent) => {
 }
 
 @keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 </style>

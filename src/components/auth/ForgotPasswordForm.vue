@@ -3,29 +3,24 @@
     <template #header>
       <h2 class="text-h5 text-center">Восстановление пароля</h2>
     </template>
-    
-    <p class="text-body-2 mb-6 text-center">
-      Введите ваш email, и мы отправим инструкции по восстановлению пароля
-    </p>
-    
-    <form @submit.prevent="handleSubmit">
+
+    <form class="form" @submit.prevent="handleSubmit">
       <!-- Email поле -->
       <UiBaseInput
         v-model="form.email"
-        label="Email"
         placeholder="Email"
         type="email"
         size="large"
         :error="errors.email"
+        class="mb-4"
         @blur="validateEmailField"
         @input="validateEmailField"
-        class="mb-4"
       />
-      
+
       <!-- Кнопка восстановления -->
       <UiBaseButton
         type="submit"
-        variant="primary"
+        variant="secondary"
         size="large"
         :loading="isLoading"
         block
@@ -33,30 +28,25 @@
       >
         Восстановить
       </UiBaseButton>
-      
+
       <!-- Ошибка -->
       <UiBaseAlert
         v-if="error"
         type="error"
         icon="⚠️"
         closable
-        @close="clearError"
         class="mb-4"
+        @close="clearError"
       >
         {{ error }}
       </UiBaseAlert>
-      
+
       <!-- Успешная отправка -->
-      <UiBaseAlert
-        v-if="isSuccess"
-        type="success"
-        icon="✅"
-        class="mb-4"
-      >
+      <UiBaseAlert v-if="isSuccess" type="success" icon="✅" class="mb-4">
         Инструкции по восстановлению пароля отправлены на ваш email.
       </UiBaseAlert>
     </form>
-    
+
     <template #footer>
       <div class="text-center">
         <UiBaseButton
@@ -72,78 +62,83 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref } from "vue";
 
 // Эмиты
 const emit = defineEmits<{
-  'back-to-login': []
-}>()
+  "back-to-login": [];
+}>();
 
 // Используем store для авторизации
-const authStore = useAuthStore()
-const { isLoading, error } = storeToRefs(authStore)
-const isSuccess = ref(false)
+const authStore = useAuthStore();
+const { isLoading, error } = storeToRefs(authStore);
+const isSuccess = ref(false);
 
 // Форма
 const form = reactive({
-  email: ''
-})
+  email: "",
+});
 
 // Ошибки валидации
 const errors = reactive({
-  email: ''
-})
+  email: "",
+});
 
 // Очистка ошибки
 const clearError = () => {
-  error.value = null
-}
+  error.value = null;
+};
 
 // Очистка ошибок валидации
 const clearValidationErrors = () => {
-  errors.email = ''
-}
+  errors.email = "";
+};
 
 // Валидация email
 const validateEmail = (email: string): string => {
-  if (!email) return 'Email обязателен'
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) return 'Введите корректный email'
-  return ''
-}
+  if (!email) return "Email обязателен";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) return "Введите корректный email";
+  return "";
+};
 
 // Валидация email поля
 const validateEmailField = () => {
-  errors.email = validateEmail(form.email)
-}
+  errors.email = validateEmail(form.email);
+};
 
 // Валидация формы
 const validateForm = (): boolean => {
-  clearValidationErrors()
-  
-  errors.email = validateEmail(form.email)
-  
-  return !errors.email
-}
+  clearValidationErrors();
+
+  errors.email = validateEmail(form.email);
+
+  return !errors.email;
+};
 
 // Обработка отправки формы
 const handleSubmit = async () => {
   if (!validateForm()) {
-    return
+    return;
   }
-  
-  await authStore.forgotPassword(form.email)
-  
+
+  await authStore.forgotPassword(form.email);
+
   // Если нет ошибки, значит письмо отправлено успешно
   if (!authStore.error) {
-    isSuccess.value = true
+    isSuccess.value = true;
     // Очищаем форму
-    form.email = ''
+    form.email = "";
   }
-}
+};
 </script>
 
 <style scoped>
+.form {
+  display: grid;
+  gap: 20px;
+}
+
 .forgot-password-form {
   max-width: 400px;
   width: 100%;

@@ -4,11 +4,10 @@
       <div class="header-content">
         <div class="header-left">
           <NuxtLink to="/" class="header-logo">
-            <span class="app-logo">📍</span>
-            <span class="app-title">Trip Checklist</span>
+            <img src="/assets/logo.webp" alt="" class="logo" />
           </NuxtLink>
         </div>
-        
+
         <div class="header-right">
           <!-- Для авторизованных пользователей -->
           <template v-if="isAuthenticated">
@@ -22,7 +21,7 @@
               Выйти
             </UiBaseButton>
           </template>
-          
+
           <!-- Для неавторизованных пользователей -->
           <template v-else>
             <UiBaseButton variant="primary" @click="goToAuth">
@@ -37,24 +36,24 @@
 
 <script setup lang="ts">
 // Используем store для авторизации
-const authStore = useAuthStore()
-const { user, isAuthenticated } = storeToRefs(authStore)
+const authStore = useAuthStore();
+const { user, isAuthenticated } = storeToRefs(authStore);
 
 // Переход на страницу авторизации
 const goToAuth = () => {
-  navigateTo('/auth')
-}
+  navigateTo("/auth");
+};
 
 // Переход в личный кабинет
 const goToChecklists = () => {
-  navigateTo('/checklists')
-}
+  navigateTo("/checklists");
+};
 
 // Выход из системы
 const logout = () => {
-  authStore.logout()
-  navigateTo('/')
-}
+  authStore.logout();
+  navigateTo("/");
+};
 </script>
 
 <style scoped>
@@ -76,6 +75,10 @@ const logout = () => {
 .header-left {
   display: flex;
   align-items: center;
+}
+
+.logo {
+  height: 50px;
 }
 
 .header-logo {

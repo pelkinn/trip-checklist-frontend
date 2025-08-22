@@ -1,9 +1,9 @@
 <template>
   <div :class="alertClasses" role="alert">
-    <div class="base-alert-icon" v-if="icon">
+    <div v-if="icon" class="base-alert-icon">
       <span class="base-alert-icon-text">{{ icon }}</span>
     </div>
-    
+
     <div class="base-alert-content">
       <div v-if="title" class="base-alert-title">
         {{ title }}
@@ -12,12 +12,12 @@
         <slot />
       </div>
     </div>
-    
+
     <button
       v-if="closable"
       class="base-alert-close"
-      @click="handleClose"
       aria-label="Закрыть"
+      @click="handleClose"
     >
       ×
     </button>
@@ -26,29 +26,29 @@
 
 <script setup lang="ts">
 interface Props {
-  type?: 'info' | 'success' | 'warning' | 'error'
-  title?: string
-  icon?: string
-  closable?: boolean
+  type?: "info" | "success" | "warning" | "error";
+  title?: string;
+  icon?: string;
+  closable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  type: 'info',
-  closable: false
-})
+  type: "info",
+  closable: false,
+});
 
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
 const alertClasses = computed(() => [
-  'base-alert',
-  `base-alert--${props.type}`
-])
+  "base-alert",
+  `base-alert--${props.type}`,
+]);
 
 const handleClose = () => {
-  emit('close')
-}
+  emit("close");
+};
 </script>
 
 <style scoped>
