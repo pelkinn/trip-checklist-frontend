@@ -12,7 +12,7 @@ export const useApiConfig = () => {
         FORGOT_PASSWORD: '/auth/forgot-password',
         RESET_PASSWORD: '/auth/reset-password',
         VERIFY_EMAIL: '/auth/verify-email',
-        RESEND_VERIFICATION: '/auth/resend-verification'
+        RESEND_VERIFICATION: '/auth/resend-verification',
       },
       USER_CHECKLISTS: {
         LIST: '/user-checklist',
@@ -23,19 +23,19 @@ export const useApiConfig = () => {
         ITEMS: {
           CREATE: '/user-checklist/:id/items',
           UPDATE: '/user-checklist/:id/items/:itemId',
-          DELETE: '/user-checklist/:id/items/:itemId'
-        }
+          DELETE: '/user-checklist/:id/items/:itemId',
+        },
       },
       CHECKLISTS: {
         GET_TEMPLATE: '/checklist',
-        LIST_ALL: '/checklist/all'
+        LIST_ALL: '/checklist/all',
       },
       TRIP_TYPES: {
-        LIST: '/trip-type'
+        LIST: '/trip-type',
       },
       DURATIONS: {
-        LIST: '/duration'
-      }
-    }
+        LIST: '/duration',
+      },
+    },
   }
 }

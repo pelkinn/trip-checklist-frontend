@@ -79,100 +79,100 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+  import { reactive, ref } from 'vue'
 
-const props = defineProps({});
-// Эмиты
-const emit = defineEmits<{
-  register: [];
-  "forgot-password": [];
-}>();
+  const props = defineProps({})
+  // Эмиты
+  const emit = defineEmits<{
+    register: []
+    'forgot-password': []
+  }>()
 
-// Используем store для авторизации
-const authStore = useAuthStore();
-const { isLoading, error } = storeToRefs(authStore);
+  // Используем store для авторизации
+  const authStore = useAuthStore()
+  const { isLoading, error } = storeToRefs(authStore)
 
-// Форма
-const form = reactive({
-  email: "",
-  password: "",
-});
+  // Форма
+  const form = reactive({
+    email: '',
+    password: '',
+  })
 
-// Ошибки валидации
-const errors = reactive({
-  email: "",
-  password: "",
-});
+  // Ошибки валидации
+  const errors = reactive({
+    email: '',
+    password: '',
+  })
 
-// Очистка ошибок валидации
-const clearValidationErrors = () => {
-  errors.email = "";
-  errors.password = "";
-};
-
-// Валидация email
-const validateEmail = (email: string): string => {
-  if (!email) return "Email обязателен";
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) return "Введите корректный email";
-  return "";
-};
-
-// Валидация пароля
-const validatePassword = (password: string): string => {
-  if (!password) return "Пароль обязателен";
-  if (password.length < 6) return "Пароль должен содержать минимум 6 символов";
-  return "";
-};
-
-// Валидация email поля
-const validateEmailField = () => {
-  errors.email = validateEmail(form.email);
-};
-
-// Валидация пароля поля
-const validatePasswordField = () => {
-  errors.password = validatePassword(form.password);
-};
-
-// Валидация формы
-const validateForm = (): boolean => {
-  clearValidationErrors();
-
-  errors.email = validateEmail(form.email);
-  errors.password = validatePassword(form.password);
-
-  return !errors.email && !errors.password;
-};
-
-// Обработка отправки формы
-const handleSubmit = async () => {
-  if (!validateForm()) {
-    return;
+  // Очистка ошибок валидации
+  const clearValidationErrors = () => {
+    errors.email = ''
+    errors.password = ''
   }
 
-  await authStore.login(form.email, form.password);
-
-  // Если нет ошибки, значит вход успешен
-  if (!authStore.error) {
-    // Успешный вход - редирект на страницу чеклистов
-    navigateTo("/checklists");
+  // Валидация email
+  const validateEmail = (email: string): string => {
+    if (!email) return 'Email обязателен'
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) return 'Введите корректный email'
+    return ''
   }
-};
 
-// Очистка ошибки
-const clearError = () => {
-  authStore.clearError();
-};
+  // Валидация пароля
+  const validatePassword = (password: string): string => {
+    if (!password) return 'Пароль обязателен'
+    if (password.length < 6) return 'Пароль должен содержать минимум 6 символов'
+    return ''
+  }
+
+  // Валидация email поля
+  const validateEmailField = () => {
+    errors.email = validateEmail(form.email)
+  }
+
+  // Валидация пароля поля
+  const validatePasswordField = () => {
+    errors.password = validatePassword(form.password)
+  }
+
+  // Валидация формы
+  const validateForm = (): boolean => {
+    clearValidationErrors()
+
+    errors.email = validateEmail(form.email)
+    errors.password = validatePassword(form.password)
+
+    return !errors.email && !errors.password
+  }
+
+  // Обработка отправки формы
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return
+    }
+
+    await authStore.login(form.email, form.password)
+
+    // Если нет ошибки, значит вход успешен
+    if (!authStore.error) {
+      // Успешный вход - редирект на страницу чеклистов
+      navigateTo('/checklists')
+    }
+  }
+
+  // Очистка ошибки
+  const clearError = () => {
+    authStore.clearError()
+  }
 </script>
 
 <style scoped>
-.form {
-  display: grid;
-  gap: 20px;
-}
-.login-form {
-  max-width: 400px;
-  width: 100%;
-}
+  .form {
+    display: grid;
+    gap: 20px;
+  }
+  .login-form {
+    max-width: 400px;
+    width: 100%;
+  }
 </style>

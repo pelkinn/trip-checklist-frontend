@@ -1,14 +1,14 @@
-import { defineNuxtModule } from "@nuxt/kit";
+import { defineNuxtModule } from '@nuxt/kit'
 
 export default defineNuxtModule({
   meta: {
-    name: "yandexMetrika",
+    name: 'yandexMetrika',
   },
   setup(_, nuxt) {
     if (nuxt.options.dev) {
-      return;
+      return
     }
-    nuxt.options.app.head.script ??= [];
+    nuxt.options.app.head.script ??= []
     nuxt.options.app.head.script.push({
       innerHTML: `
 (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -24,13 +24,13 @@ window.ym?.(${nuxt.options.runtimeConfig.public.yandexMetrika.id}, 'init', {
   webvisor: true
 });
 `,
-    });
+    })
 
-    nuxt.options.app.head.noscript ??= [];
+    nuxt.options.app.head.noscript ??= []
     nuxt.options.app.head.noscript.push({
       innerHTML: `
 <div><img src="https://mc.yandex.ru/watch/${nuxt.options.runtimeConfig.public.yandexMetrika.id}" style="position:absolute; left:-9999px;" alt="" /></div>
 `,
-    });
+    })
   },
-});
+})

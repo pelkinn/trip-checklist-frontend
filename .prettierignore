@@ -1,0 +1,12 @@
+node_modules
+.nuxt
+dist
+.output
+coverage
+*.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+public/pwa-*.png
+public/favicon.png
+

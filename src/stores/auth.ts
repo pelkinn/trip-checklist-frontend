@@ -47,15 +47,15 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const authApi = useAuthApi()
       const response = await authApi.login({ email, password })
-      
+
       setToken(response.access_token)
       setUser({
         id: response.id,
         email: response.email,
         role: 'USER', // По умолчанию, потом обновим через /auth/me
-        emailVerified: false
+        emailVerified: false,
       })
-      
+
       // Загружаем полный профиль
       await fetchUserProfile()
     } catch (err: any) {
@@ -103,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     token.value = null
     error.value = null
-    
+
     if (process.client) {
       localStorage.removeItem('auth_token')
     }
@@ -112,7 +112,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Получение профиля пользователя
   const fetchUserProfile = async () => {
     if (!token.value) return false
-    
+
     try {
       const authApi = useAuthApi()
       const response = await authApi.fetchUserProfile(token.value)
@@ -149,13 +149,13 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     isLoading,
     error,
-    
+
     // Computed
     isAuthenticated,
     userEmail,
     userRole,
     isEmailVerified,
-    
+
     // Functions
     setToken,
     setUser,
@@ -167,6 +167,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     fetchUserProfile,
     checkAuth,
-    clearError
+    clearError,
   }
 })
