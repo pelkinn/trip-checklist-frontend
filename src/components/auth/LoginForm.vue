@@ -71,7 +71,7 @@
       <div class="text-center">
         <span class="text-body-2">Нет аккаунта? </span>
         <UiBaseButton variant="text" size="small" @click="$emit('register')">
-          Зарегестрироваться
+          Зарегистрироваться
         </UiBaseButton>
       </div>
     </template>
@@ -79,9 +79,6 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
-
-  const props = defineProps({})
   // Эмиты
   const emit = defineEmits<{
     register: []

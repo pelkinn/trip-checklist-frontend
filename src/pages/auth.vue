@@ -61,8 +61,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-
   // Middleware для гостей - перенаправляем авторизованных пользователей
   definePageMeta({
     middleware: 'auth',
