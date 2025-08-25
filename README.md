@@ -18,6 +18,7 @@ npm install
 ## Настройка
 
 1. Создайте файл `.env` в корне проекта:
+
 ```env
 # API Configuration
 NUXT_API_BASE_URL=http://localhost:3000
@@ -47,7 +48,7 @@ npm run dev
 ### Компоненты
 
 - `LoginForm` - форма входа
-- `RegisterForm` - форма регистрации  
+- `RegisterForm` - форма регистрации
 - `ForgotPasswordForm` - форма восстановления пароля
 
 ### Архитектура

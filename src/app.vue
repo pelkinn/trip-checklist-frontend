@@ -11,9 +11,9 @@
 </template>
 
 <style scoped>
-.main {
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-}
+  .main {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+  }
 </style>

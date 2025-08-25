@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import type { 
-  UserChecklist, 
+import type {
+  UserChecklist,
   UserChecklistItem,
-  TripTypeDto, 
-  DurationDto, 
+  TripTypeDto,
+  DurationDto,
   ItemDto,
-  CreateUserChecklistDto 
+  CreateUserChecklistDto,
 } from '~/types/checklist'
 
 export const useChecklistsStore = defineStore('checklists', () => {
@@ -50,7 +50,7 @@ export const useChecklistsStore = defineStore('checklists', () => {
     try {
       const authStore = useAuthStore()
       const checklistsApi = useChecklistsApi()
-      
+
       const data = await checklistsApi.fetchUserChecklists(authStore.token!)
       userChecklists.value = data
     } catch (err: any) {
@@ -83,13 +83,19 @@ export const useChecklistsStore = defineStore('checklists', () => {
   }
 
   // Загрузка шаблонного чеклиста
-  const fetchTemplateChecklist = async (tripTypeId: number, durationId: number) => {
+  const fetchTemplateChecklist = async (
+    tripTypeId: number,
+    durationId: number
+  ) => {
     isLoading.value = true
     error.value = null
 
     try {
       const checklistsApi = useChecklistsApi()
-      const data = await checklistsApi.fetchTemplateChecklist(tripTypeId, durationId)
+      const data = await checklistsApi.fetchTemplateChecklist(
+        tripTypeId,
+        durationId
+      )
       templateItems.value = data
     } catch (err: any) {
       // Проверяем, является ли это ошибкой "не найдено" (404)
@@ -114,8 +120,11 @@ export const useChecklistsStore = defineStore('checklists', () => {
     try {
       const authStore = useAuthStore()
       const checklistsApi = useChecklistsApi()
-      
-      const responseData = await checklistsApi.createUserChecklist(data, authStore.token!)
+
+      const responseData = await checklistsApi.createUserChecklist(
+        data,
+        authStore.token!
+      )
       userChecklists.value.push(responseData)
       return responseData
     } catch (err: any) {
@@ -133,9 +142,11 @@ export const useChecklistsStore = defineStore('checklists', () => {
     try {
       const authStore = useAuthStore()
       const checklistsApi = useChecklistsApi()
-      
+
       await checklistsApi.deleteUserChecklist(id, authStore.token!)
-      userChecklists.value = userChecklists.value.filter(checklist => checklist.id !== id)
+      userChecklists.value = userChecklists.value.filter(
+        checklist => checklist.id !== id
+      )
     } catch (err: any) {
       error.value = err.data?.message || 'Ошибка удаления чеклиста'
     } finally {
@@ -151,7 +162,7 @@ export const useChecklistsStore = defineStore('checklists', () => {
     try {
       const authStore = useAuthStore()
       const checklistsApi = useChecklistsApi()
-      
+
       const data = await checklistsApi.fetchChecklist(id, authStore.token!)
       currentChecklist.value = data
       return data
@@ -163,29 +174,47 @@ export const useChecklistsStore = defineStore('checklists', () => {
   }
 
   // Обновление элемента чеклиста
-  const updateChecklistItem = async (checklistId: number, itemId: number, updates: Partial<UserChecklistItem>) => {
+  const updateChecklistItem = async (
+    checklistId: number,
+    itemId: number,
+    updates: Partial<UserChecklistItem>
+  ) => {
     try {
       const authStore = useAuthStore()
       const checklistsApi = useChecklistsApi()
-      
-      const updatedItem = await checklistsApi.updateChecklistItem(checklistId, itemId, updates, authStore.token!)
+
+      const updatedItem = await checklistsApi.updateChecklistItem(
+        checklistId,
+        itemId,
+        updates,
+        authStore.token!
+      )
 
       // Обновляем элемент в текущем чеклисте
       if (currentChecklist.value && currentChecklist.value.id === checklistId) {
-        const itemIndex = currentChecklist.value.items.findIndex(item => item.id === itemId)
+        const itemIndex = currentChecklist.value.items.findIndex(
+          item => item.id === itemId
+        )
         if (itemIndex !== -1) {
-          currentChecklist.value.items[itemIndex] = { ...currentChecklist.value.items[itemIndex], ...updatedItem }
+          currentChecklist.value.items[itemIndex] = {
+            ...currentChecklist.value.items[itemIndex],
+            ...updatedItem,
+          }
         }
       }
 
       // Обновляем элемент в списке чеклистов
-      const checklistIndex = userChecklists.value.findIndex(checklist => checklist.id === checklistId)
+      const checklistIndex = userChecklists.value.findIndex(
+        checklist => checklist.id === checklistId
+      )
       if (checklistIndex !== -1) {
-        const itemIndex = userChecklists.value[checklistIndex].items.findIndex(item => item.id === itemId)
+        const itemIndex = userChecklists.value[checklistIndex].items.findIndex(
+          item => item.id === itemId
+        )
         if (itemIndex !== -1) {
-          userChecklists.value[checklistIndex].items[itemIndex] = { 
-            ...userChecklists.value[checklistIndex].items[itemIndex], 
-            ...updatedItem 
+          userChecklists.value[checklistIndex].items[itemIndex] = {
+            ...userChecklists.value[checklistIndex].items[itemIndex],
+            ...updatedItem,
           }
         }
       }
@@ -207,8 +236,6 @@ export const useChecklistsStore = defineStore('checklists', () => {
     error.value = null
   }
 
-
-
   return {
     // State
     userChecklists,
@@ -218,13 +245,13 @@ export const useChecklistsStore = defineStore('checklists', () => {
     currentChecklist,
     isLoading,
     error,
-    
+
     // Computed
     hasChecklists,
     hasTripTypes,
     hasDurations,
     hasTemplateItems,
-    
+
     // Functions
     getTripTypeName,
     getDurationLabel,
@@ -238,6 +265,6 @@ export const useChecklistsStore = defineStore('checklists', () => {
     fetchChecklist,
     updateChecklistItem,
     clearCurrentChecklist,
-    clearError
+    clearError,
   }
 })

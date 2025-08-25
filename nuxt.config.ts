@@ -1,9 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  compatibilityDate: "2025-05-15",
+  compatibilityDate: '2025-05-15',
   devtools: { enabled: false },
-  srcDir: "./src/",
+  srcDir: './src/',
 
   runtimeConfig: {
     public: {
@@ -16,56 +16,53 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      htmlAttrs: { lang: "ru" },
-      title: "Trip Checklist — Персональные чеклисты путешествий",
+      htmlAttrs: { lang: 'ru' },
+      title: 'Trip Checklist — Персональные чеклисты путешествий',
       meta: [
-        { charset: "utf-8" },
-        { name: "language", content: "ru" },
-        { "http-equiv": "content-language", content: "ru" },
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { charset: 'utf-8' },
+        { name: 'language', content: 'ru' },
+        { 'http-equiv': 'content-language', content: 'ru' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
-          name: "description",
+          name: 'description',
           content:
-            "Trip Checklist — создавайте персональные чеклисты для ваших путешествий. Организуйте поездки с помощью удобных списков.",
+            'Trip Checklist — создавайте персональные чеклисты для ваших путешествий. Организуйте поездки с помощью удобных списков.',
         },
 
         {
-          property: "og:title",
-          content: "Trip Checklist — Персональные чеклисты путешествий",
+          property: 'og:title',
+          content: 'Trip Checklist — Персональные чеклисты путешествий',
         },
         {
-          property: "og:description",
-          content:
-            "Создавайте персональные чеклисты для ваших путешествий.",
+          property: 'og:description',
+          content: 'Создавайте персональные чеклисты для ваших путешествий.',
         },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: "https://trip-checklist.ru" },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: 'https://trip-checklist.ru' },
         {
-          property: "og:image",
-          content: "https://trip-checklist.ru/pwa-192x192.png",
+          property: 'og:image',
+          content: 'https://trip-checklist.ru/pwa-192x192.png',
         },
       ],
       link: [
-        { rel: "icon", sizes: "any", href: "/favicon.ico" },
-        { rel: "icon", type: "image/svg+xml", href: "/favicon.png" },
+        { rel: 'icon', sizes: 'any', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.png' },
       ],
     },
   },
 
-  css: ["~/assets/style/main.scss"],
+  css: ['~/assets/style/main.scss'],
 
   components: {
-    dirs: [
-      '~/components'
-    ]
+    dirs: ['~/components'],
   },
 
   modules: [
-    "@nuxt/eslint",
-    "@vite-pwa/nuxt",
-    "~/modules/yandexMetrika",
-    "@nuxtjs/sitemap",
-    "@pinia/nuxt",
+    '@nuxt/eslint',
+    '@vite-pwa/nuxt',
+    '~/modules/yandexMetrika',
+    '@nuxtjs/sitemap',
+    '@pinia/nuxt',
   ],
 
   vite: {
@@ -76,35 +73,35 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    registerType: "autoUpdate",
+    registerType: 'autoUpdate',
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
       navigateFallback: null,
     },
     manifest: {
-      name: "Trip Checklist",
-      short_name: "Trip Checklist",
-      description: "Персональные чеклисты путешествий",
-      lang: "ru",
-      theme_color: "#667eea",
-      background_color: "#667eea",
+      name: 'Trip Checklist',
+      short_name: 'Trip Checklist',
+      description: 'Персональные чеклисты путешествий',
+      lang: 'ru',
+      theme_color: '#667eea',
+      background_color: '#667eea',
       icons: [
         {
-          src: "pwa-192x192.png",
-          sizes: "192x192",
-          type: "image/png",
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
         },
         {
-          src: "pwa-512x512.png",
-          sizes: "512x512",
-          type: "image/png",
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
         },
       ],
     },
   },
 
   site: {
-    url: "https://trip-checklist.ru",
-    name: "Trip Checklist — Персональные чеклисты путешествий",
+    url: 'https://trip-checklist.ru',
+    name: 'Trip Checklist — Персональные чеклисты путешествий',
   },
-});
+})

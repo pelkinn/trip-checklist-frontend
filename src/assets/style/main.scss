@@ -8,7 +8,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: 'Ruda', sans-serif;
   line-height: 1.6;
@@ -23,11 +24,11 @@ html, body {
 
 // Variables
 :root {
-  --primary-color: #0B74D1;
+  --primary-color: #5492c8;
   --primary-dark: #0959a8;
-  --accent-color: #FF6B1A;
-  --accent-dark: #e55a0f;
-  --secondary-color: #764ba2;
+  --accent-color: #ff6b1a;
+  --accent-dark: #e76a27;
+  --secondary-color: #eb7741;
   --success-color: #4caf50;
   --error-color: #f44336;
   --warning-color: #ff9800;
@@ -45,18 +46,30 @@ html, body {
 
 // Layout classes
 .container {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 // Color utilities
-.text-primary { color: var(--primary-color); }
-.text-accent { color: var(--accent-color); }
-.text-secondary { color: var(--text-secondary); }
-.text-light { color: var(--text-light); }
-.text-error { color: var(--error-color); }
-.text-success { color: var(--success-color); }
+.text-primary {
+  color: var(--primary-color);
+}
+.text-accent {
+  color: var(--accent-color);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-light {
+  color: var(--text-light);
+}
+.text-error {
+  color: var(--error-color);
+}
+.text-success {
+  color: var(--success-color);
+}
 
 // Responsive
 @media (max-width: 768px) {

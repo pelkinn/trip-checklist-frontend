@@ -1,22 +1,27 @@
-import type { 
-  UserChecklist, 
+import type {
+  UserChecklist,
   UserChecklistItem,
-  TripTypeDto, 
-  DurationDto, 
+  TripTypeDto,
+  DurationDto,
   ItemDto,
-  CreateUserChecklistDto 
+  CreateUserChecklistDto,
 } from '~/types/checklist'
 
 export const useChecklistsApi = () => {
   const apiConfig = useApiConfig()
 
   // Загрузка чеклистов пользователя
-  const fetchUserChecklists = async (token: string): Promise<UserChecklist[]> => {
-    return await $fetch<UserChecklist[]>(`${apiConfig.BASE_URL}/user-checklist`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+  const fetchUserChecklists = async (
+    token: string
+  ): Promise<UserChecklist[]> => {
+    return await $fetch<UserChecklist[]>(
+      `${apiConfig.BASE_URL}/user-checklist`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
+    )
   }
 
   // Загрузка типов поездок
@@ -30,56 +35,74 @@ export const useChecklistsApi = () => {
   }
 
   // Загрузка шаблонного чеклиста
-  const fetchTemplateChecklist = async (tripTypeId: number, durationId: number): Promise<ItemDto[]> => {
+  const fetchTemplateChecklist = async (
+    tripTypeId: number,
+    durationId: number
+  ): Promise<ItemDto[]> => {
     return await $fetch<ItemDto[]>(`${apiConfig.BASE_URL}/checklist`, {
-      params: { tripTypeId, durationId }
+      params: { tripTypeId, durationId },
     })
   }
 
   // Создание пользовательского чеклиста
-  const createUserChecklist = async (data: CreateUserChecklistDto, token: string): Promise<UserChecklist> => {
+  const createUserChecklist = async (
+    data: CreateUserChecklistDto,
+    token: string
+  ): Promise<UserChecklist> => {
     return await $fetch<UserChecklist>(`${apiConfig.BASE_URL}/user-checklist`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: data
+      body: data,
     })
   }
 
   // Удаление чеклиста
-  const deleteUserChecklist = async (id: number, token: string): Promise<void> => {
+  const deleteUserChecklist = async (
+    id: number,
+    token: string
+  ): Promise<void> => {
     return await $fetch(`${apiConfig.BASE_URL}/user-checklist/${id}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
   }
 
   // Загрузка конкретного чеклиста
-  const fetchChecklist = async (id: number, token: string): Promise<UserChecklist> => {
-    return await $fetch<UserChecklist>(`${apiConfig.BASE_URL}/user-checklist/${id}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+  const fetchChecklist = async (
+    id: number,
+    token: string
+  ): Promise<UserChecklist> => {
+    return await $fetch<UserChecklist>(
+      `${apiConfig.BASE_URL}/user-checklist/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
+    )
   }
 
   // Обновление элемента чеклиста
   const updateChecklistItem = async (
-    checklistId: number, 
-    itemId: number, 
-    updates: Partial<UserChecklistItem>, 
+    checklistId: number,
+    itemId: number,
+    updates: Partial<UserChecklistItem>,
     token: string
   ): Promise<UserChecklistItem> => {
-    return await $fetch<UserChecklistItem>(`${apiConfig.BASE_URL}/user-checklist/${checklistId}/items/${itemId}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: updates
-    })
+    return await $fetch<UserChecklistItem>(
+      `${apiConfig.BASE_URL}/user-checklist/${checklistId}/items/${itemId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: updates,
+      }
+    )
   }
 
   return {
@@ -90,6 +113,6 @@ export const useChecklistsApi = () => {
     createUserChecklist,
     deleteUserChecklist,
     fetchChecklist,
-    updateChecklistItem
+    updateChecklistItem,
   }
 }
