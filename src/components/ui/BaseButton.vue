@@ -32,7 +32,7 @@
   })
 
   const emit = defineEmits<{
-    click: [event: MouseEvent]
+    (e: 'click'): void
   }>()
 
   const buttonClasses = computed(() => [
@@ -46,9 +46,9 @@
     },
   ])
 
-  const handleClick = (event: MouseEvent) => {
+  const handleClick = () => {
     if (!props.disabled && !props.loading) {
-      emit('click', event)
+      emit('click')
     }
   }
 </script>

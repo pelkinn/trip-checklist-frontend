@@ -1,89 +1,111 @@
 <template>
   <div class="base-select">
-    <label v-if="label" class="select-label">{{ label }}</label>
-    <select
-      :value="modelValue"
-      @change="handleChange"
-      class="select-input"
-      :required="required"
-      :disabled="disabled"
-    >
-      <option v-if="placeholder" value="">{{ placeholder }}</option>
-      <option
-        v-for="option in options"
-        :key="option.value"
-        :value="option.value"
+    <label v-if="label" :id="id" class="bs-label">{{ label }}</label>
+
+    <div class="bs-control" @click="toggle">
+      <span class="bs-value">
+        {{ selected ? selected.label : placeholder }}
+      </span>
+      <span class="bs-caret">▾</span>
+    </div>
+
+    <ul v-if="isOpen" :id="id" class="bs-list">
+      <li
+        v-for="opt in normalizedOptions"
+        :key="opt.value"
+        class="bs-option"
+        @click="select(opt)"
       >
-        {{ option.label }}
-      </option>
-    </select>
+        {{ opt.label }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-  interface SelectOption {
-    value: string | number
-    label: string
-  }
+  type Option = { label: string; value: string | number } | string
 
-  interface Props {
-    modelValue: string | number
-    options: SelectOption[]
+  const props = defineProps<{
+    modelValue: string | number | null
     label?: string
     placeholder?: string
-    required?: boolean
-    disabled?: boolean
-  }
-
-  const props = defineProps<Props>()
-  const emit = defineEmits<{
-    'update:modelValue': [value: string | number]
+    options: Option[]
   }>()
 
-  const handleChange = (event: Event) => {
-    const target = event.target as HTMLSelectElement
-    emit('update:modelValue', target.value)
+  const emit = defineEmits<{
+    (e: 'update:modelValue', value: string | number | null): void
+  }>()
+
+  const isOpen = ref(false)
+
+  const normalizedOptions = computed(() =>
+    props.options.map((o): { label: string; value: string | number } =>
+      typeof o === 'string' ? { label: o, value: o } : o
+    )
+  )
+
+  const selected = computed(
+    () =>
+      normalizedOptions.value.find(o => o.value === props.modelValue) || null
+  )
+
+  function toggle(): void {
+    isOpen.value = !isOpen.value
   }
+
+  function select(option: { label: string; value: string | number }): void {
+    emit('update:modelValue', option.value)
+    isOpen.value = false
+  }
+
+  const id = useId()
 </script>
 
 <style scoped>
   .base-select {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
+    position: relative;
   }
-
-  .select-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
+  .bs-label {
+    font-size: 12px;
+    font-weight: 500;
     color: var(--text-primary);
-    font-size: 14px;
   }
-
-  .select-input {
-    width: 100%;
-    padding: 12px;
+  .bs-control {
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 16px;
-    background-color: white;
-    transition: border-color 0.2s ease;
+    border-radius: var(--border-radius);
+    background-color: var(--background);
+    color: var(--text-primary);
+    padding: 6px 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bs-value {
+    color: var(--text-primary);
+  }
+  .bs-caret {
+    font-size: 12px;
+  }
+  .bs-list {
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    z-index: 5;
+  }
+  .bs-option {
+    padding: 6px 8px;
     cursor: pointer;
   }
-
-  .select-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(11, 116, 209, 0.1);
-  }
-
-  .select-input:disabled {
-    background-color: var(--background-secondary);
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-
-  .select-input:hover:not(:disabled) {
-    border-color: var(--primary-color);
+  .bs-option:hover {
+    background: #f3f3f3;
   }
 </style>

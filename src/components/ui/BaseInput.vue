@@ -1,23 +1,19 @@
 <template>
   <div class="base-input-wrapper">
-    <label v-if="label" :for="inputId" class="base-input-label">
+    <label v-if="label" :for="id" class="base-input-label">
       {{ label }}
     </label>
 
     <div class="base-input-container">
       <input
-        :id="inputId"
+        :id="id"
         ref="inputRef"
-        v-model="inputValue"
+        v-model="model"
         :type="type"
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
         :class="inputClasses"
-        @input="handleInput"
-        @blur="handleBlur"
-        @focus="handleFocus"
-        @keydown="handleKeydown"
       />
 
       <div v-if="error" class="base-input-error">
@@ -29,7 +25,6 @@
 
 <script setup lang="ts">
   interface Props {
-    modelValue?: string | number
     label?: string
     placeholder?: string
     type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url'
@@ -40,30 +35,16 @@
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    modelValue: '',
     type: 'text',
     disabled: false,
     readonly: false,
     size: 'medium',
+    error: '',
+    placeholder: '',
+    label: '',
   })
 
-  const emit = defineEmits<{
-    'update:modelValue': [value: string]
-    input: [event: Event]
-    blur: [event: FocusEvent]
-    focus: [event: FocusEvent]
-    keydown: [event: KeyboardEvent]
-  }>()
-
-  const inputRef = ref<HTMLInputElement>()
-  const inputId = computed(
-    () => `input-${Math.random().toString(36).substr(2, 9)}`
-  )
-
-  const inputValue = computed({
-    get: () => String(props.modelValue || ''),
-    set: (value: string) => emit('update:modelValue', value),
-  })
+  const model = defineModel<string | number | null>({ default: '' })
 
   const inputClasses = computed(() => [
     'base-input',
@@ -75,28 +56,7 @@
     },
   ])
 
-  const handleInput = (event: Event) => {
-    emit('input', event)
-  }
-
-  const handleBlur = (event: FocusEvent) => {
-    emit('blur', event)
-  }
-
-  const handleFocus = (event: FocusEvent) => {
-    emit('focus', event)
-  }
-
-  const handleKeydown = (event: KeyboardEvent) => {
-    emit('keydown', event)
-  }
-
-  // Expose focus method
-  defineExpose({
-    focus: () => inputRef.value?.focus(),
-    blur: () => inputRef.value?.blur(),
-    select: () => inputRef.value?.select(),
-  })
+  const id = useId()
 </script>
 
 <style scoped>
@@ -107,10 +67,9 @@
   }
 
   .base-input-label {
-    font-size: 0.875rem;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
   }
 
   .base-input-container {
@@ -119,7 +78,7 @@
 
   .base-input {
     width: 100%;
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     background-color: var(--background);
     color: var(--text-primary);
