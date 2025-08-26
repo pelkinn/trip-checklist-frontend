@@ -45,10 +45,10 @@
             </VBtn>
           </VCard>
 
-          <div v-if="templateItems.length > 0">
+          <div v-if="checklistActive.items.length > 0">
             <VList class="mb-6">
               <VListItem
-                v-for="item in templateItems"
+                v-for="item in checklistActive?.items"
                 :key="item.id"
                 class="template-item"
               >
@@ -67,12 +67,16 @@
 </template>
 
 <script setup lang="ts">
+  import type { ItemDto } from '~/types/checklist'
+
   const authStore = useAuthStore()
   const { user, isAuthenticated } = storeToRefs(authStore)
 
   const checklistsStore = useChecklistsStore()
-  const { tripTypes, durations, templateItems, isLoading, error } =
+  const { tripTypes, durations, isLoading, error } =
     storeToRefs(checklistsStore)
+
+  const { fetchTemplateChecklist, createUserChecklist } = useChecklistsApi()
 
   const searchForm = ref({
     tripTypeId: null,
@@ -88,13 +92,18 @@
     ])
   })
 
+  const checklistActive = ref<{ id: number; items: ItemDto[] }>({
+    id: 0,
+    items: [],
+  })
+
   const searchTemplate = async () => {
     if (!searchForm.value.tripTypeId || !searchForm.value.durationId) return
 
     loadingSearch.value = true
 
     try {
-      await checklistsStore.fetchTemplateChecklist(
+      checklistActive.value = await fetchTemplateChecklist(
         searchForm.value.tripTypeId,
         searchForm.value.durationId
       )
@@ -107,9 +116,26 @@
 
   const handleCreateChecklist = () => {
     if (isAuthenticated.value) {
-      navigateTo('/checklists')
+      createChecklist()
     } else {
       navigateTo('/auth')
+    }
+  }
+
+  const createChecklist = async () => {
+    try {
+      const authStore = useAuthStore()
+      await createUserChecklist(
+        {
+          checklistId: checklistActive.value.id,
+        },
+        authStore.token!
+      )
+      navigateTo('/checklists')
+    } catch (err: any) {
+      error.value = err.data?.message || 'Ошибка создания чеклиста'
+    } finally {
+      isLoading.value = false
     }
   }
 

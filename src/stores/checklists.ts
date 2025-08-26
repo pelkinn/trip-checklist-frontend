@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import type {
+  DurationDto,
+  TripTypeDto,
   UserChecklist,
   UserChecklistItem,
-  TripTypeDto,
-  DurationDto,
-  ItemDto,
-  CreateUserChecklistDto,
 } from '~/types/checklist'
 
 export const useChecklistsStore = defineStore('checklists', () => {
@@ -13,28 +11,9 @@ export const useChecklistsStore = defineStore('checklists', () => {
   const userChecklists = ref<UserChecklist[]>([])
   const tripTypes = ref<TripTypeDto[]>([])
   const durations = ref<DurationDto[]>([])
-  const templateItems = ref<ItemDto[]>([])
   const currentChecklist = ref<UserChecklist | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
-
-  // Computed
-  const hasChecklists = computed(() => userChecklists.value.length > 0)
-  const hasTripTypes = computed(() => tripTypes.value.length > 0)
-  const hasDurations = computed(() => durations.value.length > 0)
-  const hasTemplateItems = computed(() => templateItems.value.length > 0)
-
-  // Получение названия типа поездки по ID
-  const getTripTypeName = (id: number) => {
-    const tripType = tripTypes.value.find(type => type.id === id)
-    return tripType ? tripType.name : `Тип #${id}`
-  }
-
-  // Получение названия длительности по ID
-  const getDurationLabel = (id: number) => {
-    const duration = durations.value.find(d => d.id === id)
-    return duration ? duration.label : `Длительность #${id}`
-  }
 
   // Подсчет выполненных элементов в чеклисте
   const getCompletedItems = (checklist: UserChecklist) => {
@@ -79,58 +58,6 @@ export const useChecklistsStore = defineStore('checklists', () => {
       durations.value = data
     } catch (err: any) {
       error.value = err.data?.message || 'Ошибка загрузки длительностей'
-    }
-  }
-
-  // Загрузка шаблонного чеклиста
-  const fetchTemplateChecklist = async (
-    tripTypeId: number,
-    durationId: number
-  ) => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const checklistsApi = useChecklistsApi()
-      const data = await checklistsApi.fetchTemplateChecklist(
-        tripTypeId,
-        durationId
-      )
-      templateItems.value = data
-    } catch (err: any) {
-      // Проверяем, является ли это ошибкой "не найдено" (404)
-      if (err.status === 404 || err.data?.message?.includes('не найден')) {
-        templateItems.value = []
-        throw { notFound: true }
-      } else {
-        // Это реальная ошибка
-        error.value = err.data?.message || 'Ошибка загрузки шаблона'
-        templateItems.value = []
-      }
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  // Создание пользовательского чеклиста
-  const createUserChecklist = async (data: CreateUserChecklistDto) => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const authStore = useAuthStore()
-      const checklistsApi = useChecklistsApi()
-
-      const responseData = await checklistsApi.createUserChecklist(
-        data,
-        authStore.token!
-      )
-      userChecklists.value.push(responseData)
-      return responseData
-    } catch (err: any) {
-      error.value = err.data?.message || 'Ошибка создания чеклиста'
-    } finally {
-      isLoading.value = false
     }
   }
 
@@ -225,46 +152,22 @@ export const useChecklistsStore = defineStore('checklists', () => {
     }
   }
 
-  // Очистка текущего чеклиста
-  const clearCurrentChecklist = () => {
-    currentChecklist.value = null
-    templateItems.value = []
-  }
-
-  // Очистка ошибки
-  const clearError = () => {
-    error.value = null
-  }
-
   return {
     // State
     userChecklists,
     tripTypes,
     durations,
-    templateItems,
     currentChecklist,
     isLoading,
     error,
 
-    // Computed
-    hasChecklists,
-    hasTripTypes,
-    hasDurations,
-    hasTemplateItems,
-
-    // Functions
-    getTripTypeName,
-    getDurationLabel,
     getCompletedItems,
     fetchUserChecklists,
     fetchTripTypes,
     fetchDurations,
-    fetchTemplateChecklist,
-    createUserChecklist,
     deleteUserChecklist,
     fetchChecklist,
     updateChecklistItem,
-    clearCurrentChecklist,
     clearError,
   }
 })
