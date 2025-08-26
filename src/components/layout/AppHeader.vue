@@ -1,6 +1,6 @@
 <template>
   <header class="app-header">
-    <div class="container">
+    <VContainer class="container">
       <div class="header-content">
         <div class="header-left">
           <NuxtLink to="/" class="header-logo">
@@ -11,26 +11,22 @@
         <div class="header-right">
           <!-- Для авторизованных пользователей -->
           <template v-if="isAuthenticated">
-            <UiBaseButton variant="text" class="user-email">
+            <VBtn variant="text" class="user-email">
               {{ user?.email }}
-            </UiBaseButton>
-            <UiBaseButton variant="outline" @click="goToChecklists">
+            </VBtn>
+            <VBtn variant="outlined" @click="goToChecklists">
               Личный кабинет
-            </UiBaseButton>
-            <UiBaseButton variant="primary" @click="logout">
-              Выйти
-            </UiBaseButton>
+            </VBtn>
+            <VBtn @click="logout"> Выйти </VBtn>
           </template>
 
           <!-- Для неавторизованных пользователей -->
           <template v-else>
-            <UiBaseButton variant="primary" @click="goToAuth">
-              Войти
-            </UiBaseButton>
+            <VBtn @click="goToAuth"> Войти </VBtn>
           </template>
         </div>
       </div>
-    </div>
+    </VContainer>
   </header>
 </template>
 

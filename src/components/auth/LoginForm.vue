@@ -32,27 +32,23 @@
 
         <!-- Забыли пароль -->
         <div class="text-right mb-4">
-          <UiBaseButton
-            variant="text"
-            size="small"
-            @click="$emit('forgot-password')"
-          >
+          <VBtn variant="text" size="small" @click="$emit('forgot-password')">
             Забыли пароль?
-          </UiBaseButton>
+          </VBtn>
         </div>
       </div>
 
       <!-- Кнопка входа -->
-      <UiBaseButton
+      <VBtn
         type="submit"
-        variant="secondary"
+        color="secondary"
         size="large"
         :loading="isLoading"
         block
         class="mb-4"
       >
         Войти
-      </UiBaseButton>
+      </VBtn>
 
       <!-- Ошибка -->
       <UiBaseAlert
@@ -70,9 +66,9 @@
     <template #footer>
       <div class="text-center">
         <span class="text-body-2">Нет аккаунта? </span>
-        <UiBaseButton variant="text" size="small" @click="$emit('register')">
+        <VBtn variant="text" size="small" @click="$emit('register')">
           Зарегистрироваться
-        </UiBaseButton>
+        </VBtn>
       </div>
     </template>
   </UiBaseCard>

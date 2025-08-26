@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import vuetify from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
@@ -57,12 +58,19 @@ export default defineNuxtConfig({
     dirs: ['~/components'],
   },
 
+  plugins: ['~/plugins/vuetify'],
+
   modules: [
     '@nuxt/eslint',
     '@vite-pwa/nuxt',
     '~/modules/yandexMetrika',
     '@nuxtjs/sitemap',
     '@pinia/nuxt',
+    async (_options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', config => {
+        config.plugins!.push(vuetify({}))
+      })
+    },
   ],
 
   vite: {

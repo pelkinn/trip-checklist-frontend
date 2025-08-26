@@ -42,43 +42,29 @@
       />
 
       <!-- Кнопка регистрации -->
-      <UiBaseButton
+      <VBtn
         type="submit"
-        variant="secondary"
+        color="secondary"
         size="large"
         :loading="isLoading"
         block
         class="mb-4"
       >
         Зарегистрироваться
-      </UiBaseButton>
-
-      <!-- Ошибка -->
-      <UiBaseAlert
-        v-if="error"
-        type="error"
-        icon="⚠️"
-        closable
-        class="mb-4"
-        @close="clearError"
-      >
-        {{ error }}
-      </UiBaseAlert>
+      </VBtn>
     </form>
 
     <template #footer>
       <div class="text-center">
         <span class="text-body-2">Уже есть аккаунт? </span>
-        <UiBaseButton variant="text" size="small" @click="$emit('login')">
-          Войти
-        </UiBaseButton>
+        <VBtn variant="text" size="small" @click="$emit('login')"> Войти </VBtn>
       </div>
     </template>
   </UiBaseCard>
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
+  import { reactive } from 'vue'
 
   // Эмиты
   const emit = defineEmits<{
@@ -177,7 +163,6 @@
 
     // Если нет ошибки, значит регистрация успешна
     if (!authStore.error) {
-      isSuccess.value = true
       // Очищаем форму
       form.email = ''
       form.password = ''
