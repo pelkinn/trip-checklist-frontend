@@ -1,57 +1,55 @@
 <template>
-  <UiBaseCard class="login-form" :elevation="3">
+  <UiBaseCard :elevation="3" class="mb-auto rounded-lg">
     <template #header>
-      <h2 class="text-h5 text-center">Вход</h2>
+      <h2 class="text-h5">Вход</h2>
     </template>
 
-    <form class="form" @submit.prevent="handleSubmit">
-      <!-- Email поле -->
-      <UiBaseInput
+    <form class="custom-grid-form" @submit.prevent="handleSubmit">
+      <v-text-field
         v-model="form.email"
-        placeholder="Email"
+        label="Email"
         type="email"
         size="large"
-        :error="errors.email"
-        class="mb-4"
         @blur="validateEmailField"
         @input="validateEmailField"
       />
 
-      <!-- Пароль поле -->
-      <div>
-        <UiBaseInput
+      <div class="password-container">
+        <v-text-field
           v-model="form.password"
-          placeholder="Пароль"
+          label="Пароль"
           type="password"
           size="large"
-          :error="errors.password"
-          class="mb-4"
+          class="mb-2"
           @blur="validatePasswordField"
           @input="validatePasswordField"
         />
 
-        <!-- Забыли пароль -->
-        <div class="text-right mb-4">
-          <VBtn variant="text" size="small" @click="$emit('forgot-password')">
+        <div class="d-flex">
+          <v-btn
+            variant="text"
+            size="small"
+            class="forgot-password-btn"
+            @click="$emit('forgot-password')"
+          >
             Забыли пароль?
-          </VBtn>
+          </v-btn>
         </div>
       </div>
 
-      <!-- Кнопка входа -->
-      <VBtn
-        type="submit"
+      <v-btn
         color="secondary"
-        size="large"
+        variant="flat"
+        height="45"
         :loading="isLoading"
+        type="submit"
         block
-        class="mb-4"
       >
         Войти
-      </VBtn>
+      </v-btn>
 
       <!-- Ошибка -->
-      <UiBaseAlert
+      <!-- <UiBaseAlert
         v-if="error"
         type="error"
         icon="⚠️"
@@ -60,7 +58,9 @@
         @close="clearError"
       >
         {{ error }}
-      </UiBaseAlert>
+      </UiBaseAlert> -->
+
+      <div class="border-sm" />
     </form>
 
     <template #footer>
@@ -75,17 +75,14 @@
 </template>
 
 <script setup lang="ts">
-  // Эмиты
   const emit = defineEmits<{
     register: []
     'forgot-password': []
   }>()
 
-  // Используем store для авторизации
   const authStore = useAuthStore()
   const { isLoading, error } = storeToRefs(authStore)
 
-  // Форма
   const form = reactive({
     email: '',
     password: '',
@@ -160,12 +157,16 @@
 </script>
 
 <style scoped>
-  .form {
+  .custom-grid-form {
     display: grid;
     gap: 20px;
   }
-  .login-form {
-    max-width: 400px;
-    width: 100%;
+
+  .password-container {
+    position: relative;
+  }
+  .forgot-password-btn {
+    margin-top: -18px;
+    padding: 0;
   }
 </style>
