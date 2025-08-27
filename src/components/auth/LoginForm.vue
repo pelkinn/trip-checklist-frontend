@@ -1,7 +1,7 @@
 <template>
   <UiBaseCard :elevation="3" class="mb-auto rounded-lg">
     <template #header>
-      <h2 class="text-h5">Вход</h2>
+      <h2 class="text-h5">Вход22</h2>
     </template>
 
     <form class="custom-grid-form" @submit.prevent="handleSubmit">
