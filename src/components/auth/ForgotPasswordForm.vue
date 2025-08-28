@@ -18,44 +18,23 @@
       />
 
       <!-- Кнопка восстановления -->
-      <UiBaseButton
+      <VBtn
         type="submit"
-        variant="secondary"
+        color="secondary"
         size="large"
         :loading="isLoading"
         block
         class="mb-4"
       >
         Восстановить
-      </UiBaseButton>
-
-      <!-- Ошибка -->
-      <UiBaseAlert
-        v-if="error"
-        type="error"
-        icon="⚠️"
-        closable
-        class="mb-4"
-        @close="clearError"
-      >
-        {{ error }}
-      </UiBaseAlert>
-
-      <!-- Успешная отправка -->
-      <UiBaseAlert v-if="isSuccess" type="success" icon="✅" class="mb-4">
-        Инструкции по восстановлению пароля отправлены на ваш email.
-      </UiBaseAlert>
+      </VBtn>
     </form>
 
     <template #footer>
       <div class="text-center">
-        <UiBaseButton
-          variant="text"
-          size="small"
-          @click="$emit('back-to-login')"
-        >
+        <VBtn variant="text" size="small" @click="$emit('back-to-login')">
           Вернуться к входу
-        </UiBaseButton>
+        </VBtn>
       </div>
     </template>
   </UiBaseCard>

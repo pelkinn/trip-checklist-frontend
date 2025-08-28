@@ -1,84 +1,68 @@
 <template>
   <UiBaseCard class="register-form" :elevation="3">
     <template #header>
-      <h2 class="text-h5 text-center">Регистрация</h2>
+      <h2 class="text-h5">Регистрация</h2>
     </template>
 
     <form class="form" @submit.prevent="handleSubmit">
-      <!-- Email поле -->
-      <UiBaseInput
+      <v-text-field
         v-model="form.email"
-        placeholder="Email"
+        label="Email"
         type="email"
         size="large"
-        :error="errors.email"
-        class="mb-4"
         @blur="validateEmailField"
         @input="validateEmailField"
       />
+      <!-- :error="errors.email" -->
 
       <!-- Пароль поле -->
-      <UiBaseInput
+      <v-text-field
         v-model="form.password"
-        placeholder="Пароль"
+        label="Пароль"
         type="password"
         size="large"
-        :error="errors.password"
-        class="mb-4"
+        class="mb-2"
         @blur="validatePasswordField"
         @input="validatePasswordField"
       />
+      <!-- :error="errors.password" -->
 
       <!-- Повторите пароль поле -->
-      <UiBaseInput
+      <v-text-field
         v-model="form.confirmPassword"
-        placeholder="Повторите пароль"
+        label="Повторите пароль"
         type="password"
         size="large"
-        :error="errors.confirmPassword"
-        class="mb-4"
+        class="mb-2"
         @blur="validateConfirmPasswordField"
         @input="validateConfirmPasswordField"
       />
+      <!-- :error="errors.confirmPassword" -->
 
-      <!-- Кнопка регистрации -->
-      <UiBaseButton
-        type="submit"
-        variant="secondary"
-        size="large"
+      <v-btn
+        color="secondary"
+        variant="flat"
+        height="45"
         :loading="isLoading"
+        type="submit"
         block
-        class="mb-4"
       >
         Зарегистрироваться
-      </UiBaseButton>
+      </v-btn>
 
-      <!-- Ошибка -->
-      <UiBaseAlert
-        v-if="error"
-        type="error"
-        icon="⚠️"
-        closable
-        class="mb-4"
-        @close="clearError"
-      >
-        {{ error }}
-      </UiBaseAlert>
+      <div class="border-sm mt-5" />
     </form>
 
     <template #footer>
-      <div class="text-center">
-        <span class="text-body-2">Уже есть аккаунт? </span>
-        <UiBaseButton variant="text" size="small" @click="$emit('login')">
-          Войти
-        </UiBaseButton>
+      <div class="d-flex">
+        <VBtn variant="text" @click="$emit('login')"> Войти </VBtn>
       </div>
     </template>
   </UiBaseCard>
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
+  import { reactive } from 'vue'
 
   // Эмиты
   const emit = defineEmits<{
@@ -177,7 +161,6 @@
 
     // Если нет ошибки, значит регистрация успешна
     if (!authStore.error) {
-      isSuccess.value = true
       // Очищаем форму
       form.email = ''
       form.password = ''
@@ -189,7 +172,7 @@
 <style scoped>
   .form {
     display: grid;
-    gap: 20px;
+    gap: 5px;
   }
 
   .register-form {

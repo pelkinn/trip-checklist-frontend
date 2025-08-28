@@ -16,8 +16,8 @@ export interface UserChecklistItem {
 
 export interface UserChecklist {
   id: number
-  checklist_id: number
-  user_id: number
+  checklistId: number
+  userId: number
   items: UserChecklistItem[]
   created_at: string
   updated_at: string
@@ -25,9 +25,7 @@ export interface UserChecklist {
 
 // DTO для создания пользовательского чеклиста
 export interface CreateUserChecklistDto {
-  checklist_id: number
-  items: number[]
-  user_id: number
+  checklistId: number
 }
 
 // DTO для обновления пользовательского чеклиста

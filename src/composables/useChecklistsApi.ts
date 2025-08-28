@@ -1,10 +1,10 @@
 import type {
-  UserChecklist,
-  UserChecklistItem,
-  TripTypeDto,
+  CreateUserChecklistDto,
   DurationDto,
   ItemDto,
-  CreateUserChecklistDto,
+  TripTypeDto,
+  UserChecklist,
+  UserChecklistItem,
 } from '~/types/checklist'
 
 export const useChecklistsApi = () => {
@@ -34,12 +34,11 @@ export const useChecklistsApi = () => {
     return await $fetch<DurationDto[]>(`${apiConfig.BASE_URL}/duration`)
   }
 
-  // Загрузка шаблонного чеклиста
   const fetchTemplateChecklist = async (
     tripTypeId: number,
     durationId: number
-  ): Promise<ItemDto[]> => {
-    return await $fetch<ItemDto[]>(`${apiConfig.BASE_URL}/checklist`, {
+  ): Promise<{ id: number; items: ItemDto[] }> => {
+    return await $fetch(`${apiConfig.BASE_URL}/checklist`, {
       params: { tripTypeId, durationId },
     })
   }
