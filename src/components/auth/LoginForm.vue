@@ -4,19 +4,17 @@
 
     <VForm @submit.prevent="handleSubmit">
       <v-text-field
-        v-model="form.email"
+        v-model="v$.email.$model"
         label="Email"
         type="email"
-        @blur="validateEmailField"
-        @input="validateEmailField"
+        :error-messages="getErrorMessage(v$.email)"
       />
 
       <v-text-field
-        v-model="form.password"
+        v-model="v$.password.$model"
         label="Пароль"
         type="password"
-        @blur="validatePasswordField"
-        @input="validatePasswordField"
+        :error-messages="getErrorMessage(v$.password)"
       />
 
       <p
@@ -26,7 +24,7 @@
         Забыли пароль?
       </p>
 
-      <v-btn color="secondary" :loading="isLoading" type="submit" block>
+      <v-btn color="secondary" :loading="loading" type="submit" block>
         Войти
       </v-btn>
     </VForm>
@@ -46,67 +44,53 @@
 </template>
 
 <script setup lang="ts">
+  import useVuelidate from '@vuelidate/core'
+  import { email, helpers, minLength, required } from '@vuelidate/validators'
+
   const emit = defineEmits<{
     (e: 'register' | 'forgot-password'): void
   }>()
 
-  const authStore = useAuthStore()
-  const { isLoading } = storeToRefs(authStore)
+  const services = useServices()
 
-  const form = reactive({
+  const { user } = storeToRefs(useAuthStore())
+
+  const form = ref({
     email: '',
     password: '',
   })
 
-  const errors = reactive({
-    email: '',
-    password: '',
-  })
+  const loading = ref(false)
 
-  const clearValidationErrors = () => {
-    errors.email = ''
-    errors.password = ''
+  const rules = {
+    email: {
+      required: helpers.withMessage('Обязательное поле', required),
+      email: helpers.withMessage('Некорректный Email', email),
+    },
+    password: {
+      required: helpers.withMessage('Обязательное поле', required),
+      minLength: helpers.withMessage('Обязательное поле', minLength(6)),
+    },
   }
 
-  const validateEmail = (email: string): string => {
-    if (!email) return 'Email обязателен'
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) return 'Введите корректный email'
-    return ''
-  }
-
-  const validatePassword = (password: string): string => {
-    if (!password) return 'Пароль обязателен'
-    if (password.length < 6) return 'Пароль должен содержать минимум 6 символов'
-    return ''
-  }
-
-  const validateEmailField = () => {
-    errors.email = validateEmail(form.email)
-  }
-
-  const validatePasswordField = () => {
-    errors.password = validatePassword(form.password)
-  }
-
-  const validateForm = (): boolean => {
-    clearValidationErrors()
-
-    errors.email = validateEmail(form.email)
-    errors.password = validatePassword(form.password)
-
-    return !errors.email && !errors.password
-  }
+  const v$ = useVuelidate(rules, form)
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!(await v$.value.$validate())) {
       return
     }
 
-    await authStore.login(form.email, form.password)
-
-    if (!authStore.error) {
-      navigateTo('/checklists')
+    loading.value = true
+    try {
+      await services.auth.login({
+        email: form.value.email,
+        password: form.value.password,
+      })
+      user.value = await services.auth.me()
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loading.value = false
     }
   }
 </script>

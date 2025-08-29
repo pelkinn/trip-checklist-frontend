@@ -1,27 +1,27 @@
-export interface LoginDto {
+export interface Login {
   email: string
   password: string
 }
 
-export interface RegisterDto {
+export interface Register {
   email: string
   password: string
 }
 
-export interface ForgotPasswordDto {
+export interface ForgotPassword {
   email: string
 }
 
-export interface ResetPasswordDto {
+export interface ResetPassword {
   token: string
   password: string
 }
 
-export interface VerifyEmailDto {
+export interface VerifyEmail {
   token: string
 }
 
-export interface ResendVerificationDto {
+export interface ResendVerification {
   email: string
 }
 

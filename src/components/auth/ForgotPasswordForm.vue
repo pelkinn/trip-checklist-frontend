@@ -4,20 +4,13 @@
 
     <VForm class="mb-6" @submit.prevent="handleSubmit">
       <v-text-field
-        v-model="form.email"
+        v-model="v$.email"
         label="Email"
         type="email"
-        @blur="validateEmailField"
-        @input="validateEmailField"
+        :error-messages="getErrorMessage(v$.phone)"
       />
 
-      <VBtn
-        type="submit"
-        color="secondary"
-        size="large"
-        :loading="isLoading"
-        block
-      >
+      <VBtn type="submit" color="secondary" :loading="loading" block>
         Восстановить
       </VBtn>
     </VForm>
@@ -32,55 +25,44 @@
 </template>
 
 <script setup lang="ts">
+  import { useVuelidate } from '@vuelidate/core'
+  import { email, helpers, required } from '@vuelidate/validators'
+
   const emit = defineEmits<{
     (e: 'back-to-login'): void
   }>()
 
-  const authStore = useAuthStore()
-  const { isLoading } = storeToRefs(authStore)
-  const isSuccess = ref(false)
+  const services = useServices()
 
-  const form = reactive({
+  const loading = ref(false)
+
+  const form = ref({
     email: '',
   })
 
-  const errors = reactive({
-    email: '',
-  })
-
-  const clearValidationErrors = () => {
-    errors.email = ''
+  const rules = {
+    email: {
+      required: helpers.withMessage('Обязательное поле', required),
+      email: helpers.withMessage('Некорректный Email', email),
+    },
   }
 
-  const validateEmail = (email: string): string => {
-    if (!email) return 'Email обязателен'
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) return 'Введите корректный email'
-    return ''
-  }
-
-  const validateEmailField = () => {
-    errors.email = validateEmail(form.email)
-  }
-
-  const validateForm = (): boolean => {
-    clearValidationErrors()
-
-    errors.email = validateEmail(form.email)
-
-    return !errors.email
-  }
+  const v$ = useVuelidate(rules, form)
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!(await v$.value.$validate())) {
       return
     }
 
-    await authStore.forgotPassword(form.email)
-
-    if (!authStore.error) {
-      isSuccess.value = true
-      form.email = ''
+    loading.value = true
+    try {
+      await services.auth.forgotPassword({
+        email: form.value.email,
+      })
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loading.value = false
     }
   }
 </script>

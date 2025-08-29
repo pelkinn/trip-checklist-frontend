@@ -4,30 +4,27 @@
 
     <VForm @submit.prevent="handleSubmit">
       <v-text-field
-        v-model="form.email"
+        v-model="v$.email.$model"
         label="Email"
         type="email"
-        @blur="validateEmailField"
-        @input="validateEmailField"
+        :error-messages="getErrorMessage(v$.email)"
       />
 
       <v-text-field
-        v-model="form.password"
+        v-model="v$.password.$model"
         label="Пароль"
         type="password"
-        @blur="validatePasswordField"
-        @input="validatePasswordField"
+        :error-messages="getErrorMessage(v$.password)"
       />
 
       <v-text-field
-        v-model="form.confirmPassword"
+        v-model="v$.confirmPassword.$model"
         label="Повторите пароль"
         type="password"
-        @blur="validateConfirmPasswordField"
-        @input="validateConfirmPasswordField"
+        :error-messages="getErrorMessage(v$.confirmPassword)"
       />
 
-      <v-btn color="secondary" :loading="isLoading" type="submit" block>
+      <v-btn color="secondary" :loading="loading" type="submit" block>
         Зарегистрироваться
       </v-btn>
     </VForm>
@@ -46,88 +43,64 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive } from 'vue'
+  import { useVuelidate } from '@vuelidate/core'
+  import {
+    email,
+    helpers,
+    minLength,
+    required,
+    sameAs,
+  } from '@vuelidate/validators'
 
   const emit = defineEmits<{
     (e: 'login'): void
   }>()
 
-  const authStore = useAuthStore()
-  const { isLoading } = storeToRefs(authStore)
+  const services = useServices()
 
-  const form = reactive({
+  const form = ref({
     email: '',
     password: '',
     confirmPassword: '',
   })
 
-  const errors = reactive({
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
+  const loading = ref(false)
 
-  const clearValidationErrors = () => {
-    errors.email = ''
-    errors.password = ''
-    errors.confirmPassword = ''
-  }
+  const rules = computed(() => ({
+    email: {
+      required: helpers.withMessage('Обязательное поле', required),
+      email: helpers.withMessage('Некорректный Email', email),
+    },
+    password: {
+      required: helpers.withMessage('Обязательное поле', required),
+      minLength: helpers.withMessage('Обязательное поле', minLength(6)),
+    },
+    confirmPassword: {
+      required: helpers.withMessage('Обязательное поле', required),
+      sameAs: helpers.withMessage(
+        'Пароли не совпадают',
+        sameAs(form.value.password)
+      ),
+    },
+  }))
 
-  const validateEmail = (email: string): string => {
-    if (!email) return 'Email обязателен'
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) return 'Введите корректный email'
-    return ''
-  }
-
-  const validatePassword = (password: string): string => {
-    if (!password) return 'Пароль обязателен'
-    if (password.length < 8) return 'Пароль должен содержать минимум 8 символов'
-    return ''
-  }
-
-  const validateConfirmPassword = (confirmPassword: string): string => {
-    if (!confirmPassword) return 'Подтверждение пароля обязательно'
-    if (confirmPassword !== form.password) return 'Пароли не совпадают'
-    return ''
-  }
-
-  const validateEmailField = () => {
-    errors.email = validateEmail(form.email)
-  }
-
-  const validatePasswordField = () => {
-    errors.password = validatePassword(form.password)
-    if (form.confirmPassword) {
-      errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
-    }
-  }
-
-  const validateConfirmPasswordField = () => {
-    errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
-  }
-
-  const validateForm = (): boolean => {
-    clearValidationErrors()
-
-    errors.email = validateEmail(form.email)
-    errors.password = validatePassword(form.password)
-    errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
-
-    return !errors.email && !errors.password && !errors.confirmPassword
-  }
+  const v$ = useVuelidate(rules, form)
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!(await v$.value.$validate())) {
       return
     }
 
-    await authStore.register(form.email, form.password)
-
-    if (!authStore.error) {
-      form.email = ''
-      form.password = ''
-      form.confirmPassword = ''
+    loading.value = true
+    try {
+      await services.auth.register({
+        email: form.value.email,
+        password: form.value.password,
+      })
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loading.value = false
     }
   }
 </script>
