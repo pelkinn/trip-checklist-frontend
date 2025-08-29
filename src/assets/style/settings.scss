@@ -1,0 +1,16 @@
+@use 'sass:map';
+
+@use 'vuetify/settings' with (
+  $body-font-family: (
+    'Ruda',
+    sans-serif,
+  ),
+  $container-max-widths: (
+    'xs': null,
+    'sm': null,
+    'md': null,
+    'lg': null,
+    'xl': 1440,
+  ),
+  $button-text-transform: normal
+);

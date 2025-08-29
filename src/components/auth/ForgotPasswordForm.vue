@@ -1,79 +1,57 @@
 <template>
-  <UiBaseCard class="forgot-password-form" :elevation="3">
-    <template #header>
-      <h2 class="text-h5 text-center">Восстановление пароля</h2>
-    </template>
+  <VCard :elevation="3" class="rounded-lg pa-6">
+    <h2 class="text-h5 mb-6">Восстановление пароля</h2>
 
-    <form class="form" @submit.prevent="handleSubmit">
-      <!-- Email поле -->
-      <UiBaseInput
+    <VForm class="mb-6" @submit.prevent="handleSubmit">
+      <v-text-field
         v-model="form.email"
-        placeholder="Email"
+        label="Email"
         type="email"
-        size="large"
-        :error="errors.email"
-        class="mb-4"
         @blur="validateEmailField"
         @input="validateEmailField"
       />
 
-      <!-- Кнопка восстановления -->
       <VBtn
         type="submit"
         color="secondary"
         size="large"
         :loading="isLoading"
         block
-        class="mb-4"
       >
         Восстановить
       </VBtn>
-    </form>
+    </VForm>
 
-    <template #footer>
-      <div class="text-center">
-        <VBtn variant="text" size="small" @click="$emit('back-to-login')">
-          Вернуться к входу
-        </VBtn>
-      </div>
-    </template>
-  </UiBaseCard>
+    <p
+      class="text-body-2 text-primary cursor-pointer"
+      @click="emit('back-to-login')"
+    >
+      Войти
+    </p>
+  </VCard>
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
-
-  // Эмиты
   const emit = defineEmits<{
-    'back-to-login': []
+    (e: 'back-to-login'): void
   }>()
 
-  // Используем store для авторизации
   const authStore = useAuthStore()
-  const { isLoading, error } = storeToRefs(authStore)
+  const { isLoading } = storeToRefs(authStore)
   const isSuccess = ref(false)
 
-  // Форма
   const form = reactive({
     email: '',
   })
 
-  // Ошибки валидации
   const errors = reactive({
     email: '',
   })
 
-  // Очистка ошибки
-  const clearError = () => {
-    error.value = null
-  }
-
-  // Очистка ошибок валидации
   const clearValidationErrors = () => {
     errors.email = ''
   }
 
-  // Валидация email
   const validateEmail = (email: string): string => {
     if (!email) return 'Email обязателен'
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -81,12 +59,10 @@
     return ''
   }
 
-  // Валидация email поля
   const validateEmailField = () => {
     errors.email = validateEmail(form.email)
   }
 
-  // Валидация формы
   const validateForm = (): boolean => {
     clearValidationErrors()
 
@@ -95,7 +71,6 @@
     return !errors.email
   }
 
-  // Обработка отправки формы
   const handleSubmit = async () => {
     if (!validateForm()) {
       return
@@ -103,23 +78,9 @@
 
     await authStore.forgotPassword(form.email)
 
-    // Если нет ошибки, значит письмо отправлено успешно
     if (!authStore.error) {
       isSuccess.value = true
-      // Очищаем форму
       form.email = ''
     }
   }
 </script>
-
-<style scoped>
-  .form {
-    display: grid;
-    gap: 20px;
-  }
-
-  .forgot-password-form {
-    max-width: 400px;
-    width: 100%;
-  }
-</style>

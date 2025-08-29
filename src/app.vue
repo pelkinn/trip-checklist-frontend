@@ -1,9 +1,7 @@
 <template>
   <VApp>
     <VMain class="main">
-      <div max-width="1200" class="mb-15">
-        <NuxtPage />
-      </div>
+      <NuxtPage />
       <div class="text-center pa-2 mt-auto" />
     </VMain>
   </VApp>

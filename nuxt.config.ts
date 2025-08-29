@@ -68,7 +68,13 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     async (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config => {
-        config.plugins!.push(vuetify({}))
+        config.plugins!.push(
+          vuetify({
+            styles: {
+              configFile: '/assets/style/settings.scss',
+            },
+          })
+        )
       })
     },
   ],

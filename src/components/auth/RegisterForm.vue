@@ -1,105 +1,78 @@
 <template>
-  <UiBaseCard class="register-form" :elevation="3">
-    <template #header>
-      <h2 class="text-h5">Регистрация</h2>
-    </template>
+  <VCard :elevation="3" class="rounded-lg pa-6">
+    <h2 class="text-h5 mb-6">Регистрация</h2>
 
-    <form class="form" @submit.prevent="handleSubmit">
+    <VForm @submit.prevent="handleSubmit">
       <v-text-field
         v-model="form.email"
         label="Email"
         type="email"
-        size="large"
         @blur="validateEmailField"
         @input="validateEmailField"
       />
-      <!-- :error="errors.email" -->
 
-      <!-- Пароль поле -->
       <v-text-field
         v-model="form.password"
         label="Пароль"
         type="password"
-        size="large"
-        class="mb-2"
         @blur="validatePasswordField"
         @input="validatePasswordField"
       />
-      <!-- :error="errors.password" -->
 
-      <!-- Повторите пароль поле -->
       <v-text-field
         v-model="form.confirmPassword"
         label="Повторите пароль"
         type="password"
-        size="large"
-        class="mb-2"
         @blur="validateConfirmPasswordField"
         @input="validateConfirmPasswordField"
       />
-      <!-- :error="errors.confirmPassword" -->
 
-      <v-btn
-        color="secondary"
-        variant="flat"
-        height="45"
-        :loading="isLoading"
-        type="submit"
-        block
-      >
+      <v-btn color="secondary" :loading="isLoading" type="submit" block>
         Зарегистрироваться
       </v-btn>
+    </VForm>
 
-      <div class="border-sm mt-5" />
-    </form>
+    <VDivider class="my-6" />
 
-    <template #footer>
-      <div class="d-flex">
-        <VBtn variant="text" @click="$emit('login')"> Войти </VBtn>
-      </div>
-    </template>
-  </UiBaseCard>
+    <div class="d-flex">
+      <span
+        class="text-body-2 text-primary cursor-pointer"
+        @click="emit('login')"
+      >
+        Войти
+      </span>
+    </div>
+  </VCard>
 </template>
 
 <script setup lang="ts">
   import { reactive } from 'vue'
 
-  // Эмиты
   const emit = defineEmits<{
-    login: []
+    (e: 'login'): void
   }>()
 
-  // Используем store для авторизации
   const authStore = useAuthStore()
-  const { isLoading, error } = storeToRefs(authStore)
+  const { isLoading } = storeToRefs(authStore)
 
-  // Форма
   const form = reactive({
     email: '',
     password: '',
     confirmPassword: '',
   })
 
-  // Ошибки валидации
   const errors = reactive({
     email: '',
     password: '',
     confirmPassword: '',
   })
 
-  // Очистка ошибки
-  const clearError = () => {
-    error.value = null
-  }
-
-  // Очистка ошибок валидации
   const clearValidationErrors = () => {
     errors.email = ''
     errors.password = ''
     errors.confirmPassword = ''
   }
 
-  // Валидация email
   const validateEmail = (email: string): string => {
     if (!email) return 'Email обязателен'
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -107,40 +80,33 @@
     return ''
   }
 
-  // Валидация пароля
   const validatePassword = (password: string): string => {
     if (!password) return 'Пароль обязателен'
     if (password.length < 8) return 'Пароль должен содержать минимум 8 символов'
     return ''
   }
 
-  // Валидация подтверждения пароля
   const validateConfirmPassword = (confirmPassword: string): string => {
     if (!confirmPassword) return 'Подтверждение пароля обязательно'
     if (confirmPassword !== form.password) return 'Пароли не совпадают'
     return ''
   }
 
-  // Валидация email поля
   const validateEmailField = () => {
     errors.email = validateEmail(form.email)
   }
 
-  // Валидация пароля поля
   const validatePasswordField = () => {
     errors.password = validatePassword(form.password)
-    // Также валидируем подтверждение пароля, так как оно зависит от пароля
     if (form.confirmPassword) {
       errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
     }
   }
 
-  // Валидация подтверждения пароля поля
   const validateConfirmPasswordField = () => {
     errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
   }
 
-  // Валидация формы
   const validateForm = (): boolean => {
     clearValidationErrors()
 
@@ -151,7 +117,6 @@
     return !errors.email && !errors.password && !errors.confirmPassword
   }
 
-  // Обработка отправки формы
   const handleSubmit = async () => {
     if (!validateForm()) {
       return
@@ -159,24 +124,10 @@
 
     await authStore.register(form.email, form.password)
 
-    // Если нет ошибки, значит регистрация успешна
     if (!authStore.error) {
-      // Очищаем форму
       form.email = ''
       form.password = ''
       form.confirmPassword = ''
     }
   }
 </script>
-
-<style scoped>
-  .form {
-    display: grid;
-    gap: 5px;
-  }
-
-  .register-form {
-    max-width: 400px;
-    width: 100%;
-  }
-</style>

@@ -16,15 +16,3 @@ body {
   color: #333;
   background-color: #fff;
 }
-
-// Layout classes
-.v-container {
-  max-width: 1440px !important;
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .container {
-    padding: 0 16px;
-  }
-}
