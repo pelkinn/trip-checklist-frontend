@@ -1,7 +1,5 @@
 <template>
   <div class="checklists-page">
-    <LayoutAppHeader />
-
     <VContainer class="container">
       <div class="d-flex justify-space-between mb-10">
         <h1>Мои чеклисты</h1>
@@ -12,7 +10,7 @@
       </div>
 
       <div
-        v-else-if="!userChecklists.length"
+        v-else-if="data && !data.length"
         class="d-flex flex-column align-center"
       >
         <div>📋</div>
@@ -25,7 +23,7 @@
 
       <div v-else class="checklists-grid">
         <UserChecklistItem
-          v-for="checklist in userChecklists"
+          v-for="checklist in data"
           :key="checklist.id"
           :checklist="checklist"
         />
@@ -37,19 +35,12 @@
 <script setup lang="ts">
   definePageMeta({
     middleware: 'auth',
-    requireAuth: true,
   })
 
-  // Используем store для авторизации
-  const authStore = useAuthStore()
-  const { user } = storeToRefs(authStore)
+  const services = useServices()
 
-  // Используем store для работы с чеклистами
-  const checklistsStore = useChecklistsStore()
-  const { userChecklists, isLoading } = storeToRefs(checklistsStore)
-
-  const { data, pending } = useLazyAsyncData(() => {
-    return checklistsStore.fetchUserChecklists()
+  const { pending, data } = useLazyAsyncData(() => {
+    return services.checklist.getUserChecklists()
   })
 </script>
 

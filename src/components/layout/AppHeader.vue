@@ -9,20 +9,17 @@
         </div>
 
         <div class="header-right">
-          <!-- Для авторизованных пользователей -->
-          <template v-if="isAuthenticated">
+          <template v-if="user">
             <VBtn variant="text" class="user-email">
               {{ user?.email }}
             </VBtn>
-            <VBtn variant="outlined" @click="goToChecklists">
-              Личный кабинет
-            </VBtn>
-            <VBtn @click="logout"> Выйти </VBtn>
+            <VBtn variant="outlined" to="/checklists"> Личный кабинет </VBtn>
+            <VBtn @click="logoutFn"> Выйти </VBtn>
           </template>
 
           <!-- Для неавторизованных пользователей -->
           <template v-else>
-            <VBtn @click="goToAuth"> Войти </VBtn>
+            <VBtn to="/auth"> Войти </VBtn>
           </template>
         </div>
       </div>
@@ -31,23 +28,12 @@
 </template>
 
 <script setup lang="ts">
-  // Используем store для авторизации
-  const authStore = useAuthStore()
-  const { user, isAuthenticated } = storeToRefs(authStore)
+  const authStore = useUserStore()
+  const { user } = storeToRefs(authStore)
+  const { logout } = authStore
 
-  // Переход на страницу авторизации
-  const goToAuth = () => {
-    navigateTo('/auth')
-  }
-
-  // Переход в личный кабинет
-  const goToChecklists = () => {
-    navigateTo('/checklists')
-  }
-
-  // Выход из системы
-  const logout = () => {
-    authStore.logout()
+  const logoutFn = () => {
+    logout()
     navigateTo('/')
   }
 </script>

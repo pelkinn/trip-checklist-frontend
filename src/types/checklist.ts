@@ -1,53 +1,32 @@
-// Типы для глобальных элементов чеклистов
 export interface Item {
   id: number
   name: string
 }
 
-// Типы для пользовательских чеклистов
 export interface UserChecklistItem {
   id: number
-  item_id?: number
-  custom_name?: string
-  is_checked: boolean
-  created_at: string
-  updated_at: string
+  customName: string | null
+  isChecked: boolean
+  item: Item
 }
 
 export interface UserChecklist {
   id: number
+  createdAt: string
+  updatedAt: string | null
   checklistId: number
-  userId: number
+  checklist: {
+    id: number
+    tripType: TripType
+    duration: Duration
+  }
   items: UserChecklistItem[]
-  created_at: string
-  updated_at: string
 }
 
-// DTO для создания пользовательского чеклиста
 export interface CreateUserChecklist {
   checklistId: number
 }
 
-// DTO для обновления пользовательского чеклиста
-export interface UpdateUserChecklist {
-  items: number[]
-}
-
-// DTO для создания элемента пользовательского чеклиста
-export interface CreateUserChecklistItem {
-  item_id?: number
-  custom_name?: string
-  is_checked?: boolean
-}
-
-// DTO для обновления элемента пользовательского чеклиста
-export interface UpdateUserChecklistItem {
-  item_id?: number
-  custom_name?: string
-  is_checked?: boolean
-}
-
-// Типы для шаблонных чеклистов
 export interface TripType {
   id: number
   name: string
@@ -59,15 +38,9 @@ export interface Duration {
   label: string
 }
 
-// DTO для получения шаблонного чеклиста
 export interface GetTemplateChecklist {
   tripTypeId: number
   durationId: number
-}
-
-// Ответы API
-export interface UserChecklistResponse {
-  userChecklist: UserChecklist
 }
 
 export interface UserChecklistsResponse {

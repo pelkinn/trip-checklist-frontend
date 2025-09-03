@@ -53,11 +53,15 @@
 
   const services = useServices()
 
-  const { user } = storeToRefs(useAuthStore())
+  const { runtimeConfig } = useRuntimeConfig()
+
+  const { getUser } = useUserStore()
+
+  const accessTokenCookie = useCookie('accessToken')
 
   const form = ref({
-    email: '',
-    password: '',
+    email: runtimeConfig.public.adminLogin,
+    password: runtimeConfig.public.adminPassword,
   })
 
   const loading = ref(false)
@@ -82,11 +86,16 @@
 
     loading.value = true
     try {
-      await services.auth.login({
+      const { accessToken } = await services.auth.login({
         email: form.value.email,
         password: form.value.password,
       })
-      user.value = await services.auth.me()
+
+      accessTokenCookie.value = accessToken
+
+      await nextTick()
+
+      await getUser()
     } catch (err) {
       console.log(err)
     } finally {

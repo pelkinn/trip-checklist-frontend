@@ -19,13 +19,21 @@ export class ChecklistService {
   }
 
   getDurations() {
-    return this.api<Duration[]>(`/trip-type`)
+    return this.api<Duration[]>(`/duration`)
   }
 
-  getChecklists(tripTypeId: number, durationId: number) {
+  getChecklist(tripTypeId: number, durationId: number) {
     return this.api<{ id: number; items: Item[] }>('/checklist', {
       params: { tripTypeId, durationId },
     })
+  }
+
+  getUserChecklists() {
+    return this.api<UserChecklist[]>('/user-checklist')
+  }
+
+  getUserChecklist(id: number) {
+    return this.api<{ id: number; items: Item[] }>(`/user-checklist/${id}`)
   }
 
   createUserChecklist(body: CreateUserChecklist) {

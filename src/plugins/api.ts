@@ -4,6 +4,7 @@ import qs from 'qs'
 
 export default defineNuxtPlugin(nuxtApp => {
   const runtimeConfig = useRuntimeConfig()
+  const event = useRequestEvent()
 
   const addTokenHeader = (ctx: FetchContext) => {
     let accessToken: string | null | undefined

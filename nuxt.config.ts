@@ -12,6 +12,8 @@ export default defineNuxtConfig({
         id: 103233734,
       },
       apiBaseUrl: process.env.BASE_URL || 'http://localhost:3000',
+      adminLogin: process.env.ADMIN_LOGIN || '',
+      adminPassword: process.env.ADMIN_PASSWORD || '',
     },
   },
 
@@ -58,7 +60,7 @@ export default defineNuxtConfig({
     dirs: ['~/components'],
   },
 
-  plugins: ['~/plugins/vuetify'],
+  plugins: ['~/plugins/vuetify', '~/plugins/api', '~/plugins/init'],
 
   modules: [
     '@nuxt/eslint',

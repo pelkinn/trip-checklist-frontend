@@ -1,5 +1,6 @@
 <template>
   <VApp>
+    <LayoutAppHeader />
     <VMain class="main">
       <NuxtPage />
       <div class="text-center pa-2 mt-auto" />

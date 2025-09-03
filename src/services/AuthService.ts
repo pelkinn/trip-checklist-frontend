@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   async login(body: Login) {
-    const result = await this.api<AuthResponse>(`/login`, {
+    const result = await this.api<AuthResponse>(`/auth/login`, {
       method: 'post',
       body,
     })
@@ -29,20 +29,20 @@ export class AuthService {
   }
 
   register(body: Register) {
-    return this.api(`/login`, {
+    return this.api(`/auth/login`, {
       method: 'post',
       body,
     })
   }
 
   forgotPassword(body: ForgotPassword) {
-    return this.api(`/forgot-password`, {
+    return this.api(`/auth/forgot-password`, {
       method: 'post',
       body,
     })
   }
 
   me() {
-    return this.api<UserProfile>(`/me`)
+    return this.api<UserProfile>(`/auth/me`)
   }
 }

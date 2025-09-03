@@ -1,82 +1,85 @@
 <template>
-  <div class="home-page">
-    <!-- Header -->
-    <LayoutAppHeader />
+  <VContainer class="container">
+    <div class="d-flex flex-column align-center">
+      <div class="welcome-content">
+        <h1 class="text-primary">Trip Checklist</h1>
+        <p>
+          Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых
+          поездок: выбирайте готовые шаблоны под разные типы путешествий и
+          продолжительность, добавляйте свои пункты и отслеживайте прогресс
+          сборов
+        </p>
+      </div>
 
-    <!-- Main Content -->
-    <main class="main">
-      <VContainer class="container">
-        <div class="d-flex flex-column align-center">
-          <div class="welcome-content">
-            <h1 class="text-primary">Trip Checklist</h1>
-            <p>
-              Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых
-              поездок: выбирайте готовые шаблоны под разные типы путешествий и
-              продолжительность, добавляйте свои пункты и отслеживайте прогресс
-              сборов
-            </p>
-          </div>
+      <div v-if="pending" class="d-flex justify-center">
+        <VProgressCircular indeterminate />
+      </div>
 
-          <VCard class="search" elevation="4">
-            <VSelect
-              v-model="searchForm.tripTypeId"
-              :options="tripTypes"
-              label="Тип поездки"
-              :items="tripTypes"
-              item-value="id"
-              item-title="name"
-            />
+      <VCard v-else class="search" elevation="4">
+        <VSelect
+          v-model="searchForm.tripTypeId"
+          :options="tripTypes"
+          label="Тип поездки"
+          :items="tripTypes"
+          item-value="id"
+          item-title="name"
+        />
 
-            <VSelect
-              v-model="searchForm.durationId"
-              :options="durations"
-              label="Длительность"
-              :items="durations"
-              item-value="id"
-              item-title="label"
-            />
+        <VSelect
+          v-model="searchForm.durationId"
+          :options="durations"
+          label="Длительность"
+          :items="durations"
+          item-value="id"
+          item-title="label"
+        />
 
-            <VBtn
-              color="secondary"
-              :loading="loadingSearch"
-              @click="searchTemplate"
-            >
-              Показать
-            </VBtn>
-          </VCard>
+        <VBtn
+          color="secondary"
+          :loading="loadingSearch"
+          @click="searchTemplate"
+        >
+          Показать
+        </VBtn>
+      </VCard>
 
-          <div v-if="checklistActive.items.length > 0">
-            <VList class="mb-6">
-              <VListItem
-                v-for="item in checklistActive?.items"
-                :key="item.id"
-                class="template-item"
-              >
-                <span class="font-weight-medium">{{ item.name }}</span>
-              </VListItem>
-            </VList>
+      <div v-if="loadingSearch" class="d-flex justify-center">
+        <VProgressCircular indeterminate />
+      </div>
 
-            <VBtn @click="handleCreateChecklist"> Создать мой чеклист </VBtn>
-          </div>
+      <div v-else-if="checklistActive.items.length > 0">
+        <VList class="mb-6">
+          <VListItem
+            v-for="item in checklistActive?.items"
+            :key="item.id"
+            class="template-item"
+          >
+            <span class="font-weight-medium">{{ item.name }}</span>
+          </VListItem>
+        </VList>
 
-          <img v-else src="/assets/images/img4.webp" alt="" class="img" />
-        </div>
-      </VContainer>
-    </main>
-  </div>
+        <VBtn :loading="loadingCreateChecklist" @click="createUserChecklist">
+          Создать мой чеклист
+        </VBtn>
+      </div>
+
+      <img v-else src="/assets/images/img4.webp" alt="" class="img" />
+    </div>
+  </VContainer>
 </template>
 
 <script setup lang="ts">
-  import type { ItemDto } from '~/types/checklist'
+  import type { Item } from '~/types/checklist'
 
-  const authStore = useAuthStore()
-  const { user, isAuthenticated } = storeToRefs(authStore)
+  const checklistStore = useChecklistsStore()
+  const { getDurations, getTripTypes } = checklistStore
+  const { tripTypes, durations } = storeToRefs(checklistStore)
 
-  const checklistsStore = useChecklistsStore()
-  const { tripTypes, durations, isLoading, error } =
-    storeToRefs(checklistsStore)
+  const { pending } = useLazyAsyncData(() => {
+    return Promise.all([getDurations(), getTripTypes()])
+  })
 
-  const { fetchTemplateChecklist, createUserChecklist } = useChecklistsApi()
+  const services = useServices()
 
   const searchForm = ref({
     tripTypeId: null,
@@ -85,14 +88,7 @@
 
   const loadingSearch = ref(false)
 
-  onMounted(async () => {
-    await Promise.all([
-      checklistsStore.fetchTripTypes(),
-      checklistsStore.fetchDurations(),
-    ])
-  })
-
-  const checklistActive = ref<{ id: number; items: ItemDto[] }>({
+  const checklistActive = ref<{ id: number; items: Item[] }>({
     id: 0,
     items: [],
   })
@@ -103,39 +99,34 @@
     loadingSearch.value = true
 
     try {
-      checklistActive.value = await fetchTemplateChecklist(
+      checklistActive.value = await services.checklist.getChecklist(
         searchForm.value.tripTypeId,
         searchForm.value.durationId
       )
-    } catch (err: any) {
-      console.log(err)
+    } catch {
+      checklistActive.value = {
+        id: 0,
+        items: [],
+      }
     } finally {
       loadingSearch.value = false
     }
   }
 
-  const handleCreateChecklist = () => {
-    if (isAuthenticated.value) {
-      createChecklist()
-    } else {
-      navigateTo('/auth')
-    }
-  }
+  const loadingCreateChecklist = ref(false)
 
-  const createChecklist = async () => {
+  const createUserChecklist = async () => {
+    loadingCreateChecklist.value = true
+
     try {
-      const authStore = useAuthStore()
-      await createUserChecklist(
-        {
-          checklistId: checklistActive.value.id,
-        },
-        authStore.token!
-      )
-      navigateTo('/checklists')
+      const res = await services.checklist.createUserChecklist({
+        checklistId: checklistActive.value.id,
+      })
+      navigateTo(`/checklists/${res.id}`)
     } catch (err: any) {
-      error.value = err.data?.message || 'Ошибка создания чеклиста'
+      console.log(err)
     } finally {
-      isLoading.value = false
+      loadingCreateChecklist.value = false
     }
   }
 
