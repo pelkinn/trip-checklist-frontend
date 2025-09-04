@@ -14,12 +14,8 @@ export interface UserChecklist {
   id: number
   createdAt: string
   updatedAt: string | null
-  checklistId: number
-  checklist: {
-    id: number
-    tripType: TripType
-    duration: Duration
-  }
+  nameTripType: string
+  duration: Duration
   items: UserChecklistItem[]
 }
 
@@ -56,4 +52,10 @@ export interface TripTypesResponse {
 
 export interface DurationsResponse {
   durations: Duration[]
+}
+
+export interface UserChecklistItemBodyUpdate {
+  itemId?: number
+  customName?: string
+  isChecked?: boolean
 }

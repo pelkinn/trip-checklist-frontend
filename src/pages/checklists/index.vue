@@ -1,6 +1,6 @@
 <template>
   <div class="checklists-page">
-    <VContainer class="container">
+    <VContainer>
       <div class="d-flex justify-space-between mb-10">
         <h1>Мои чеклисты</h1>
       </div>

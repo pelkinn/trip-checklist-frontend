@@ -37,9 +37,6 @@ export default defineNuxtPlugin(async nuxtApp => {
     },
 
     defaults: {
-      VContainer: {
-        fluid: true,
-      },
       VContainerSlim: {
         fluid: true,
         class: 'v-container-slim',
@@ -81,7 +78,7 @@ export default defineNuxtPlugin(async nuxtApp => {
         density: 'comfortable',
       },
       VCheckbox: {
-        color: 'success',
+        color: 'primary',
         density: 'comfortable',
       },
 

@@ -53,7 +53,7 @@
 
   const services = useServices()
 
-  const { runtimeConfig } = useRuntimeConfig()
+  const runtimeConfig = useRuntimeConfig()
 
   const { getUser } = useUserStore()
 
@@ -96,6 +96,8 @@
       await nextTick()
 
       await getUser()
+
+      navigateTo('/checklist')
     } catch (err) {
       console.log(err)
     } finally {

@@ -6,6 +6,7 @@ import type {
   Item,
   TripType,
   UserChecklist,
+  UserChecklistItemBodyUpdate,
 } from '~/types/checklist'
 
 export class ChecklistService {
@@ -33,12 +34,29 @@ export class ChecklistService {
   }
 
   getUserChecklist(id: number) {
-    return this.api<{ id: number; items: Item[] }>(`/user-checklist/${id}`)
+    return this.api<UserChecklist>(`/user-checklist/${id}`)
   }
 
   createUserChecklist(body: CreateUserChecklist) {
     return this.api<UserChecklist>('/user-checklist', {
       method: 'post',
+      body,
+    })
+  }
+
+  removeUserChecklist(id: number) {
+    return this.api(`/user-checklist/${id}`, {
+      method: 'delete',
+    })
+  }
+
+  updateUserChecklistItem(
+    idChecklist: number,
+    itemId: number,
+    body: UserChecklistItemBodyUpdate
+  ) {
+    return this.api(`/user-checklist/${idChecklist}/items/${itemId}`, {
+      method: 'patch',
       body,
     })
   }
