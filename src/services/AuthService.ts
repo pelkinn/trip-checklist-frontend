@@ -42,6 +42,13 @@ export class AuthService {
     })
   }
 
+  verifyEmail(token: string) {
+    return this.api(`/auth/verify-email`, {
+      method: 'post',
+      body: { token },
+    })
+  }
+
   me() {
     return this.api<UserProfile>(`/auth/me`)
   }

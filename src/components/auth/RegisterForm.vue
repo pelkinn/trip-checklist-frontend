@@ -43,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+  import { LazyAuthRegisterDialogSuccess } from '#components'
   import { useVuelidate } from '@vuelidate/core'
   import {
     email,
@@ -57,6 +58,8 @@
   }>()
 
   const services = useServices()
+
+  const { openDialog } = useDialog()
 
   const form = ref({
     email: '',
@@ -97,10 +100,17 @@
         email: form.value.email,
         password: form.value.password,
       })
+      openDialogSuccess()
     } catch (err) {
       console.log(err)
     } finally {
       loading.value = false
     }
+  }
+
+  const openDialogSuccess = () => {
+    openDialog({
+      component: LazyAuthRegisterDialogSuccess,
+    })
   }
 </script>

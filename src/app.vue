@@ -5,6 +5,9 @@
       <NuxtPage />
       <div class="text-center pa-2 mt-auto" />
     </VMain>
+
+    <BaseToastContainer />
+    <BaseDialogContainer />
   </VApp>
   <VitePwaManifest />
 </template>

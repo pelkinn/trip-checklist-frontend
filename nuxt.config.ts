@@ -86,6 +86,24 @@ export default defineNuxtConfig({
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
     },
+
+    ssr: {
+      noExternal: ['vuetify'],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: [
+            `@use 'sass:map';`,
+            `@use '~/assets/style/vuetify' as v;`,
+          ].join(' '),
+        },
+      },
+    },
+
+    build: {
+      sourcemap: 'hidden',
+    },
   },
 
   pwa: {

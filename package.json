@@ -41,6 +41,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
     "sass": "^1.89.2",
+    "sass-embedded": "^1.92.0",
     "vite-plugin-vuetify": "^2.1.2"
   }
 }
