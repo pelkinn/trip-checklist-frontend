@@ -1,75 +1,105 @@
-# Nuxt Minimal Starter
+# Trip Checklist Frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Фронтенд приложения для создания персональных чеклистов путешествий.
 
-## Setup
+## Технологии
 
-Make sure to install dependencies:
+- **Nuxt 3** - Vue.js фреймворк
+- **Vuetify 3** - UI библиотека
+- **Vuelidate** - валидация форм
+- **TypeScript** - типизация
+
+## Установка
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Настройка
 
-Start the development server on `http://localhost:3000`:
+1. Создайте файл `.env` в корне проекта:
+
+```env
+# API Configuration
+NUXT_API_BASE_URL=http://localhost:3000
+```
+
+2. Убедитесь, что ваш API сервер запущен на указанном порту.
+
+## Разработка
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Приложение будет доступно по адресу [http://localhost:3000](http://localhost:3000).
 
-Build the application for production:
+## Функциональность
 
-```bash
-# npm
-npm run build
+### Авторизация
 
-# pnpm
-pnpm build
+- ✅ Вход в систему
+- ✅ Регистрация
+- ✅ Восстановление пароля
+- ✅ Валидация форм с Vuelidate
+- ✅ Middleware для защиты маршрутов
+- ✅ Автоматическое перенаправление
 
-# yarn
-yarn build
+### Компоненты
 
-# bun
-bun run build
+- `LoginForm` - форма входа
+- `RegisterForm` - форма регистрации
+- `ForgotPasswordForm` - форма восстановления пароля
+
+### Архитектура
+
+- **API Layer** - `useAuthApi`, `useChecklistsApi` - чистые API запросы
+- **Store Layer** - `useAuthStore`, `useChecklistsStore` - управление состоянием
+- **Components** - используют store для получения данных и действий
+
+### Middleware
+
+- `auth` - универсальный middleware для проверки авторизации
+  - По умолчанию защищает маршруты для авторизованных пользователей
+  - С параметром `redirectIfAuth: true` перенаправляет авторизованных пользователей
+
+## Структура проекта
+
+```
+src/
+├── components/
+│   └── auth/
+│       ├── LoginForm.vue
+│       ├── RegisterForm.vue
+│       └── ForgotPasswordForm.vue
+├── composables/
+│   ├── useAuthApi.ts
+│   ├── useChecklistsApi.ts
+│   └── useApiConfig.ts
+├── stores/
+│   ├── auth.ts
+│   └── checklists.ts
+├── config/
+│   └── api.ts
+├── middleware/
+│   └── auth.ts
+├── pages/
+│   ├── index.vue
+│   └── auth.vue
+├── plugins/
+│   └── vuelidate.client.ts
+└── types/
+    └── auth.ts
 ```
 
-Locally preview production build:
+## API Endpoints
 
-```bash
-# npm
-npm run preview
+Приложение использует следующие эндпоинты API:
 
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- `POST /auth/login` - вход в систему
+- `POST /auth/register` - регистрация
+- `GET /auth/me` - получение профиля пользователя
+- `POST /auth/forgot-password` - запрос сброса пароля
+- `POST /auth/reset-password` - сброс пароля
+- `POST /auth/verify-email` - подтверждение email
+- `POST /auth/resend-verification` - повторная отправка письма подтверждения
