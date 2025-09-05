@@ -49,6 +49,13 @@ export class AuthService {
     })
   }
 
+  resetPassword(body: { token: string; password: string }) {
+    return this.api(`/auth/reset-password`, {
+      method: 'post',
+      body,
+    })
+  }
+
   me() {
     return this.api<UserProfile>(`/auth/me`)
   }

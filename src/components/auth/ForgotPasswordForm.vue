@@ -4,10 +4,10 @@
 
     <VForm class="mb-6" @submit.prevent="handleSubmit">
       <v-text-field
-        v-model="v$.email"
+        v-model="v$.email.$model"
         label="Email"
         type="email"
-        :error-messages="getErrorMessage(v$.phone)"
+        :error-messages="getErrorMessage(v$.email)"
       />
 
       <VBtn type="submit" color="secondary" :loading="loading" block>

@@ -1,22 +1,13 @@
 <template>
-  <VCard :elevation="3" class="rounded-lg pa-6">
-    <h2 class="text-h5 mb-6">Регистрация</h2>
-
-    <VForm @submit.prevent="handleSubmit">
-      <v-text-field
-        v-model="v$.email.$model"
-        label="Email"
-        type="email"
-        :error-messages="getErrorMessage(v$.email)"
-      />
-
+  <VContainer>
+    <h2 class="text-h5 mb-6">Введите новый пароль</h2>
+    <VForm class="w-100 w-sm-50 w-lg-25" @submit.prevent="handleSubmit">
       <v-text-field
         v-model="v$.password.$model"
         label="Пароль"
         type="password"
         :error-messages="getErrorMessage(v$.password)"
       />
-
       <v-text-field
         v-model="v$.confirmPassword.$model"
         label="Повторите пароль"
@@ -24,40 +15,19 @@
         :error-messages="getErrorMessage(v$.confirmPassword)"
       />
 
-      <v-btn color="secondary" :loading="loading" type="submit" block>
-        Зарегистрироваться
-      </v-btn>
+      <v-btn :loading="loading" type="submit"> Отправить </v-btn>
     </VForm>
-
-    <VDivider class="my-6" />
-
-    <div class="d-flex">
-      <span
-        class="text-body-2 text-primary cursor-pointer"
-        @click="emit('login')"
-      >
-        Войти
-      </span>
-    </div>
-  </VCard>
+  </VContainer>
 </template>
 
 <script setup lang="ts">
-  import { LazyAuthRegisterDialogSuccess } from '#components'
+  import { LazyAuthResetPasswordDialogSuccess } from '#components'
   import { useVuelidate } from '@vuelidate/core'
-  import {
-    email,
-    helpers,
-    minLength,
-    required,
-    sameAs,
-  } from '@vuelidate/validators'
-
-  const emit = defineEmits<{
-    (e: 'login'): void
-  }>()
+  import { helpers, minLength, required, sameAs } from '@vuelidate/validators'
 
   const services = useServices()
+
+  const route = useRoute()
 
   const { openDialog } = useDialog()
 
@@ -72,10 +42,6 @@
   const loading = ref(false)
 
   const rules = computed(() => ({
-    email: {
-      required: helpers.withMessage('Обязательное поле', required),
-      email: helpers.withMessage('Некорректный Email', email),
-    },
     password: {
       required: helpers.withMessage('Обязательное поле', required),
       minLength: helpers.withMessage('Обязательное поле', minLength(8)),
@@ -100,8 +66,8 @@
 
     loading.value = true
     try {
-      await services.auth.register({
-        email: form.value.email,
+      await services.auth.resetPassword({
+        token: String(route.query.token),
         password: form.value.password,
       })
       openDialogSuccess()
@@ -121,7 +87,7 @@
 
   const openDialogSuccess = () => {
     openDialog({
-      component: LazyAuthRegisterDialogSuccess,
+      component: LazyAuthResetPasswordDialogSuccess,
     })
   }
 </script>
