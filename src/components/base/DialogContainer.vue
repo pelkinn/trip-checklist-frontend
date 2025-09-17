@@ -3,10 +3,8 @@
     v-for="[key, dialog] in dialogs"
     :key="key"
     v-bind="{
-      ...(xs || dialog.dialogProps?.fullscreen
-        ? { fullscreen: true }
-        : { width: 600 }),
-      ...dialog.dialogProps,
+      ...(xs || dialog.dialogProps?.fullscreen ? { fullscreen: true } : { width: 600 }),
+      ...dialog.dialogProps
     }"
     :model-value="dialogsOpened.get(key)"
     v-on="dialog.dialogListeners ?? {}"
@@ -32,12 +30,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { mdiClose } from '@mdi/js'
-  import { useDisplay } from 'vuetify'
+  import { mdiClose } from '@mdi/js';
+  import { useDisplay } from 'vuetify';
 
-  const { xs } = useDisplay()
+  const { xs } = useDisplay();
 
-  const { dialogs, dialogsOpened, closeDialog } = useDialog()
+  const { dialogs, dialogsOpened, closeDialog } = useDialog();
 </script>
 
 <style lang="scss" scoped>

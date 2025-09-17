@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-  import type { UserChecklist } from '~/types/checklist'
+  import type { UserChecklist } from '~/types/checklist';
 
-  defineProps<{ checklist: UserChecklist }>()
+  defineProps<{ checklist: UserChecklist }>();
 </script>

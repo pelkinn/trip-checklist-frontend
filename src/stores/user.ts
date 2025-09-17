@@ -1,22 +1,22 @@
-import { defineStore } from 'pinia'
-import type { UserProfile } from '~/types/auth'
+import { defineStore } from 'pinia';
+import type { UserProfile } from '~/types/auth';
 
 export const useUserStore = defineStore('auth', () => {
-  const services = useServices()
+  const services = useServices();
 
-  const user = ref<UserProfile | null>(null)
+  const user = ref<UserProfile | null>(null);
 
   const logout = () => {
-    user.value = null
-  }
+    user.value = null;
+  };
 
   const getUser = async () => {
-    user.value = await services.auth.me()
-  }
+    user.value = await services.auth.me();
+  };
 
   return {
     user,
     logout,
-    getUser,
-  }
-})
+    getUser
+  };
+});

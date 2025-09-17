@@ -3,23 +3,23 @@
 </template>
 
 <script lang="ts" setup>
-defineProps<{
-  type: 'error' | 'success' | 'warning' | 'info';
-  text: string;
-}>();
+  defineProps<{
+    type: 'error' | 'success' | 'warning' | 'info';
+    text: string;
+  }>();
 
-const emit = defineEmits<{
-  (e: 'close'): void;
-}>();
+  const emit = defineEmits<{
+    (e: 'close'): void;
+  }>();
 </script>
 
 <style lang="scss" scoped>
-.base-toast {
-  width: 300px;
-  margin-bottom: 8px;
+  .base-toast {
+    width: 300px;
+    margin-bottom: 8px;
 
-  &:last-child {
-    margin: 0;
+    &:last-child {
+      margin: 0;
+    }
   }
-}
 </style>

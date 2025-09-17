@@ -12,23 +12,13 @@
         <div>
           <p class="mb-4">
             Продолжительность:
-            <span class="font-weight-bold">{{
-              checklist?.duration.label
-            }}</span>
+            <span class="font-weight-bold">{{ checklist?.duration.label }}</span>
           </p>
           <p class="mb-15">
             Дата создания:
-            <span class="font-weight-bold">{{
-              formatDateTime(checklist?.createdAt)
-            }}</span>
+            <span class="font-weight-bold">{{ formatDateTime(checklist?.createdAt) }}</span>
           </p>
-          <VBtn
-            color="red"
-            variant="tonal"
-            :loading="loadingRemove"
-            @click="removeChecklist"
-            >Удалить</VBtn
-          >
+          <VBtn color="red" variant="tonal" :loading="loadingRemove" @click="removeChecklist">Удалить</VBtn>
         </div>
         <div>
           <p class="text-h5 mb-6">Список элементов</p>
@@ -52,46 +42,42 @@
 
 <script setup lang="ts">
   definePageMeta({
-    middleware: 'auth',
-  })
+    middleware: 'auth'
+  });
 
-  const services = useServices()
+  const services = useServices();
 
-  const route = useRoute()
+  const route = useRoute();
 
   const { pending, data: checklist } = useLazyAsyncData(() => {
-    return services.checklist.getUserChecklist(Number(route.params.id))
-  })
+    return services.checklist.getUserChecklist(Number(route.params.id));
+  });
 
-  const loadingRemove = ref(false)
+  const loadingRemove = ref(false);
 
   const removeChecklist = async () => {
-    loadingRemove.value = true
+    loadingRemove.value = true;
     try {
-      await services.checklist.removeUserChecklist(Number(route.params.id))
-      navigateTo('/checklists')
+      await services.checklist.removeUserChecklist(Number(route.params.id));
+      navigateTo('/checklists');
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
     } finally {
-      loadingRemove.value = false
+      loadingRemove.value = false;
     }
-  }
+  };
 
   const setChecked = async (id: number, isChecked: boolean | null) => {
     try {
-      await services.checklist.updateUserChecklistItem(
-        Number(route.params.id),
-        id,
-        {
-          isChecked: Boolean(isChecked),
-        }
-      )
-      const item = checklist.value!.items.find(el => el.id === id)
-      if (item) item.isChecked = Boolean(isChecked)
+      await services.checklist.updateUserChecklistItem(Number(route.params.id), id, {
+        isChecked: Boolean(isChecked)
+      });
+      const item = checklist.value!.items.find((el) => el.id === id);
+      if (item) item.isChecked = Boolean(isChecked);
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 </script>
 
 <style scoped>

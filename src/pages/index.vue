@@ -4,10 +4,8 @@
       <div class="welcome-content">
         <h1 class="text-primary">Trip Checklist</h1>
         <p>
-          Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых
-          поездок: выбирайте готовые шаблоны под разные типы путешествий и
-          продолжительность, добавляйте свои пункты и отслеживайте прогресс
-          сборов
+          Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых поездок: выбирайте готовые шаблоны под разные типы путешествий и
+          продолжительность, добавляйте свои пункты и отслеживайте прогресс сборов
         </p>
       </div>
 
@@ -34,13 +32,7 @@
           item-title="label"
         />
 
-        <VBtn
-          color="secondary"
-          :loading="loadingSearch"
-          @click="searchTemplate"
-        >
-          Показать
-        </VBtn>
+        <VBtn color="secondary" :loading="loadingSearch" @click="searchTemplate"> Показать </VBtn>
       </VCard>
 
       <div v-if="loadingSearch" class="d-flex justify-center">
@@ -49,18 +41,12 @@
 
       <div v-else-if="checklistActive.items.length > 0">
         <VList class="mb-6">
-          <VListItem
-            v-for="item in checklistActive?.items"
-            :key="item.id"
-            class="template-item"
-          >
+          <VListItem v-for="item in checklistActive?.items" :key="item.id" class="template-item">
             <span class="font-weight-medium">{{ item.name }}</span>
           </VListItem>
         </VList>
 
-        <VBtn :loading="loadingCreateChecklist" @click="createUserChecklist">
-          Создать мой чеклист
-        </VBtn>
+        <VBtn :loading="loadingCreateChecklist" @click="createUserChecklist"> Создать мой чеклист </VBtn>
       </div>
 
       <img v-else src="/assets/images/img4.webp" alt="" class="img" />
@@ -69,76 +55,73 @@
 </template>
 
 <script setup lang="ts">
-  import type { Item } from '~/types/checklist'
+  import type { Item } from '~/types/checklist';
 
-  const checklistStore = useChecklistsStore()
-  const { getDurations, getTripTypes } = checklistStore
-  const { tripTypes, durations } = storeToRefs(checklistStore)
+  const checklistStore = useChecklistsStore();
+  const { getDurations, getTripTypes } = checklistStore;
+  const { tripTypes, durations } = storeToRefs(checklistStore);
 
-  const { pending } = useLazyAsyncData(() => {
-    return Promise.all([getDurations(), getTripTypes()])
-  })
+  const { pending } = await useLazyAsyncData(() => {
+    return Promise.all([getDurations(), getTripTypes()]);
+  });
 
-  const services = useServices()
+  const services = useServices();
 
   const searchForm = ref({
     tripTypeId: null,
-    durationId: null,
-  })
+    durationId: null
+  });
 
-  const loadingSearch = ref(false)
+  const loadingSearch = ref(false);
 
   const checklistActive = ref<{ id: number; items: Item[] }>({
     id: 0,
-    items: [],
-  })
+    items: []
+  });
 
   const searchTemplate = async () => {
-    if (!searchForm.value.tripTypeId || !searchForm.value.durationId) return
+    if (!searchForm.value.tripTypeId || !searchForm.value.durationId) return;
 
-    loadingSearch.value = true
+    loadingSearch.value = true;
 
     try {
-      checklistActive.value = await services.checklist.getChecklist(
-        searchForm.value.tripTypeId,
-        searchForm.value.durationId
-      )
+      checklistActive.value = await services.checklist.getChecklist(searchForm.value.tripTypeId, searchForm.value.durationId);
     } catch {
       checklistActive.value = {
         id: 0,
-        items: [],
-      }
+        items: []
+      };
     } finally {
-      loadingSearch.value = false
+      loadingSearch.value = false;
     }
-  }
+  };
 
-  const loadingCreateChecklist = ref(false)
+  const loadingCreateChecklist = ref(false);
 
   const createUserChecklist = async () => {
-    loadingCreateChecklist.value = true
+    loadingCreateChecklist.value = true;
 
     try {
       const res = await services.checklist.createUserChecklist({
-        checklistId: checklistActive.value.id,
-      })
-      navigateTo(`/checklists/${res.id}`)
+        checklistId: checklistActive.value.id
+      });
+      navigateTo(`/checklists/${res.id}`);
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
     } finally {
-      loadingCreateChecklist.value = false
+      loadingCreateChecklist.value = false;
     }
-  }
+  };
 
   useHead({
     title: 'Trip Checklist - Персональные чеклисты путешествий',
     meta: [
       {
         name: 'description',
-        content: 'Создавайте персональные чеклисты для ваших путешествий',
-      },
-    ],
-  })
+        content: 'Создавайте персональные чеклисты для ваших путешествий'
+      }
+    ]
+  });
 </script>
 
 <style scoped>

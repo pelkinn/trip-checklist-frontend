@@ -23,14 +23,14 @@
 
 <script lang="ts" setup>
   defineProps<{
-    icon?: string
-    color?: string
-    onClose?: () => void
-  }>()
+    icon?: string;
+    color?: string;
+    onClose?: () => void;
+  }>();
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const slots = useSlots()
+  const slots = useSlots();
 </script>
 
 <style lang="scss" scoped>
