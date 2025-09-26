@@ -43,7 +43,7 @@ export interface TripTypesResponse {
 }
 
 export interface UserChecklistItemBodyUpdate {
-  itemId?: number;
+  idItem?: number;
   customName?: string;
   isChecked?: boolean;
 }

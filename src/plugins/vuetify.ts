@@ -58,7 +58,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         color: 'primary',
         flat: true,
         variant: 'flat',
-        rounded: 'lg',
         size: 'large'
       },
       VTextField: {

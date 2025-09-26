@@ -26,7 +26,8 @@
   import { email, helpers, minLength, required } from '@vuelidate/validators';
 
   const emit = defineEmits<{
-    (e: 'register' | 'forgotPassword'): void;
+    (e: 'register'): void;
+    (e: 'forgotPassword'): void;
   }>();
 
   const services = useServices();

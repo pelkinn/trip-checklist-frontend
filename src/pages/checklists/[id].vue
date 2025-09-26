@@ -14,21 +14,28 @@
             Дата создания:
             <span class="font-weight-bold">{{ formatDateTime(checklist?.createdAt) }}</span>
           </p>
-          <VBtn color="red" variant="tonal" :loading="loadingRemove" @click="removeChecklist">Удалить</VBtn>
+          <VBtn color="red" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
         </div>
-        <div>
+        <div class="w-100">
           <p class="text-h5 mb-6">Список вещей</p>
-          <div class="d-flex">
-            <div class="d-flex justify-center flex-column">
-              <VCheckbox
-                v-for="item in checklist?.items"
-                :key="item.id"
-                :label="item.customName || item.item.name"
-                :model-value="item.isChecked"
-                hide-details
-                @update:model-value="setChecked(item.id, $event)"
-              />
-            </div>
+
+          <div v-for="(item, index) in checklist?.items" :key="item.id">
+            <UserChecklistItem
+              :id-checklist="idChecklist"
+              :item="item"
+              @set-checked="(event) => (item.isChecked = event)"
+              @remove="() => checklist!.items.splice(index, 1)"
+            />
+          </div>
+
+          <div class="mt-6">
+            <FormAddUserChecklistItem
+              v-if="visibilityFormAddItem"
+              :id-checklist="idChecklist"
+              @cancel="visibilityFormAddItem = false"
+              @create="addItem"
+            />
+            <VBtn v-else density="compact" @click="visibilityFormAddItem = true">Добавить новую вещь</VBtn>
           </div>
         </div>
       </div>
@@ -37,6 +44,8 @@
 </template>
 
 <script setup lang="ts">
+  import type { UserChecklistItem } from '~/types/checklist';
+
   definePageMeta({
     middleware: 'auth'
   });
@@ -45,40 +54,38 @@
 
   const route = useRoute();
 
+  const idChecklist = computed(() => Number(route.params.id));
+
   const { pending, data: checklist } = useLazyAsyncData(() => {
-    return services.checklist.getUserChecklist(Number(route.params.id));
+    return services.checklist.getUserChecklist(idChecklist.value);
   });
 
-  const loadingRemove = ref(false);
+  const visibilityFormAddItem = ref(false);
+
+  const loading = ref(false);
 
   const removeChecklist = async () => {
-    loadingRemove.value = true;
+    loading.value = true;
     try {
-      await services.checklist.removeUserChecklist(Number(route.params.id));
+      await services.checklist.removeUserChecklist(idChecklist.value);
       navigateTo('/checklists');
     } catch (err: any) {
       console.log(err);
     } finally {
-      loadingRemove.value = false;
+      loading.value = false;
     }
   };
 
-  const setChecked = async (id: number, isChecked: boolean | null) => {
-    try {
-      await services.checklist.updateUserChecklistItem(Number(route.params.id), id, {
-        isChecked: Boolean(isChecked)
-      });
-      const item = checklist.value!.items.find((el) => el.id === id);
-      if (item) item.isChecked = Boolean(isChecked);
-    } catch (err: any) {
-      console.log(err);
-    }
+  const addItem = (item: UserChecklistItem) => {
+    checklist.value!.items.push(item);
+    visibilityFormAddItem.value = false;
   };
 </script>
 
 <style scoped>
   .grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: minmax(100px, 500px) 500px;
+    gap: 16px;
   }
 </style>

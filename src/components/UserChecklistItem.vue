@@ -1,14 +1,61 @@
 <template>
-  <VCard class="pa-6" :to="`/checklists/${checklist.id}`">
-    <p class="text-h5 mb-4">{{ checklist.nameTripType }}</p>
-    <p>ID Чеклиста: {{ checklist.id }}</p>
-    <p>Элементов: {{ checklist.items.length }}</p>
-    <p>Дата создания: {{ formatDateTime(checklist.createdAt) }}</p>
-  </VCard>
+  <div class="grid-item">
+    <VCheckbox
+      :label="item.customName || item.item.name"
+      :model-value="item.isChecked"
+      hide-details
+      @update:model-value="(event) => setChecked(item.id, event)"
+    />
+    <VBtn :icon="mdiDelete" color="red-lighten-1" variant="text" density="compact" :loading="loading" @click="removeItem" />
+  </div>
 </template>
 
 <script lang="ts" setup>
-  import type { UserChecklist } from '~/types/checklist';
+  import { mdiDelete } from '@mdi/js';
+  import type { UserChecklistItem } from '~/types/checklist';
 
-  defineProps<{ checklist: UserChecklist }>();
+  const props = defineProps<{
+    idChecklist: number;
+    item: UserChecklistItem;
+  }>();
+
+  const emit = defineEmits<{
+    (e: 'setChecked', value: boolean): void;
+    (e: 'remove'): void;
+  }>();
+
+  const services = useServices();
+
+  const setChecked = async (id: number, isChecked: boolean | null) => {
+    try {
+      await services.checklist.updateUserChecklistItem(props.idChecklist, id, {
+        isChecked: Boolean(isChecked)
+      });
+      emit('setChecked', Boolean(isChecked));
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  const loading = ref(false);
+
+  const removeItem = async () => {
+    loading.value = true;
+    try {
+      await services.checklist.removeUserChecklistItem(props.idChecklist, props.item.id);
+      emit('remove');
+    } catch (err: any) {
+      console.log(err);
+    } finally {
+      loading.value = false;
+    }
+  };
 </script>
+
+<style scoped>
+  .grid-item {
+    display: grid;
+    grid-template-columns: minmax(min-content, 1fr) 50px;
+    gap: 16px;
+  }
+</style>

@@ -6,6 +6,7 @@ export default withNuxt(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/unified-signatures': 'off',
       'vue/component-name-in-template-casing': [
         'error',
         'PascalCase',

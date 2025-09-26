@@ -16,7 +16,7 @@
       </div>
 
       <div v-else class="checklists-grid">
-        <UserChecklistItem v-for="checklist in data" :key="checklist.id" :checklist="checklist" />
+        <UserChecklist v-for="checklist in data" :key="checklist.id" :checklist="checklist" />
       </div>
     </VContainer>
   </div>
