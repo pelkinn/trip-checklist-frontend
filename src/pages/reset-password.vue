@@ -2,15 +2,15 @@
   <VContainer>
     <h2 class="text-h5 mb-6">Введите новый пароль</h2>
     <VForm class="w-100 w-sm-50 w-lg-25" @submit.prevent="handleSubmit">
-      <v-text-field v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
-      <v-text-field
+      <VTextField v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
+      <VTextField
         v-model="v$.confirmPassword.$model"
         label="Повторите пароль"
         type="password"
         :error-messages="getErrorMessage(v$.confirmPassword)"
       />
 
-      <v-btn :loading="loading" type="submit"> Отправить </v-btn>
+      <VBtn :loading="loading" type="submit"> Отправить </VBtn>
     </VForm>
   </VContainer>
 </template>

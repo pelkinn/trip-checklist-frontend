@@ -3,13 +3,13 @@
     <h2 class="text-h5 mb-6">Вход</h2>
 
     <VForm @submit.prevent="handleSubmit">
-      <v-text-field v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
+      <VTextField v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
 
-      <v-text-field v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
+      <VTextField v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
 
       <p class="text-body-2 text-primary cursor-pointer mb-6" @click="emit('forgotPassword')">Забыли пароль?</p>
 
-      <v-btn color="secondary" :loading="loading" type="submit" block> Войти </v-btn>
+      <VBtn color="secondary" :loading="loading" type="submit" block> Войти </VBtn>
     </VForm>
 
     <VDivider class="my-6" />
@@ -75,7 +75,7 @@
 
       await getUser();
 
-      navigateTo('/checklist');
+      navigateTo('/checklists');
     } catch (err) {
       console.log(err);
     } finally {

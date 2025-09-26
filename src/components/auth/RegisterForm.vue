@@ -3,18 +3,18 @@
     <h2 class="text-h5 mb-6">Регистрация</h2>
 
     <VForm @submit.prevent="handleSubmit">
-      <v-text-field v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
+      <VTextField v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
 
-      <v-text-field v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
+      <VTextField v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
 
-      <v-text-field
+      <VTextField
         v-model="v$.confirmPassword.$model"
         label="Повторите пароль"
         type="password"
         :error-messages="getErrorMessage(v$.confirmPassword)"
       />
 
-      <v-btn color="secondary" :loading="loading" type="submit" block> Зарегистрироваться </v-btn>
+      <VBtn color="secondary" :loading="loading" type="submit" block> Зарегистрироваться </VBtn>
     </VForm>
 
     <VDivider class="my-6" />

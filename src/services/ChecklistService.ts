@@ -1,6 +1,6 @@
 import type { $Fetch } from 'nitropack';
 import type { RuntimeConfig } from 'nuxt/schema';
-import type { CreateUserChecklist, Duration, Item, TripType, UserChecklist, UserChecklistItemBodyUpdate } from '~/types/checklist';
+import type { CreateUserChecklist, Item, TripType, UserChecklist, UserChecklistItemBodyUpdate } from '~/types/checklist';
 
 export class ChecklistService {
   constructor(
@@ -12,13 +12,9 @@ export class ChecklistService {
     return this.api<TripType[]>(`/trip-type`);
   }
 
-  getDurations() {
-    return this.api<Duration[]>(`/duration`);
-  }
-
-  getChecklist(tripTypeId: number, durationId: number) {
+  getChecklist(tripTypeId: number) {
     return this.api<{ id: number; items: Item[] }>('/checklist', {
-      params: { tripTypeId, durationId }
+      params: { tripTypeId }
     });
   }
 

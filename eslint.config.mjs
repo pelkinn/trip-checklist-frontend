@@ -6,7 +6,13 @@ export default withNuxt(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+      'vue/component-name-in-template-casing': [
+        'error',
+        'PascalCase',
+        {
+          registeredComponentsOnly: false
+        }
+      ],
       'vue/html-self-closing': [
         'error',
         {

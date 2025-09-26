@@ -15,7 +15,6 @@ export interface UserChecklist {
   createdAt: string;
   updatedAt: string | null;
   nameTripType: string;
-  duration: Duration;
   items: UserChecklistItem[];
 }
 
@@ -28,15 +27,8 @@ export interface TripType {
   name: string;
 }
 
-export interface Duration {
-  id: number;
-  days: number;
-  label: string;
-}
-
 export interface GetTemplateChecklist {
   tripTypeId: number;
-  durationId: number;
 }
 
 export interface UserChecklistsResponse {
@@ -48,10 +40,6 @@ export interface UserChecklistsResponse {
 
 export interface TripTypesResponse {
   tripTypes: TripType[];
-}
-
-export interface DurationsResponse {
-  durations: Duration[];
 }
 
 export interface UserChecklistItemBodyUpdate {

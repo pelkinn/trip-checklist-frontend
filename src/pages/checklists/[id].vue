@@ -10,10 +10,6 @@
       </div>
       <div class="grid">
         <div>
-          <p class="mb-4">
-            Продолжительность:
-            <span class="font-weight-bold">{{ checklist?.duration.label }}</span>
-          </p>
           <p class="mb-15">
             Дата создания:
             <span class="font-weight-bold">{{ formatDateTime(checklist?.createdAt) }}</span>
@@ -21,7 +17,7 @@
           <VBtn color="red" variant="tonal" :loading="loadingRemove" @click="removeChecklist">Удалить</VBtn>
         </div>
         <div>
-          <p class="text-h5 mb-6">Список элементов</p>
+          <p class="text-h5 mb-6">Список вещей</p>
           <div class="d-flex">
             <div class="d-flex justify-center flex-column">
               <VCheckbox

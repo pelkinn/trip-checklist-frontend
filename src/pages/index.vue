@@ -21,18 +21,8 @@
           :items="tripTypes"
           item-value="id"
           item-title="name"
+          :loading="loadingSearch"
         />
-
-        <VSelect
-          v-model="searchForm.durationId"
-          :options="durations"
-          label="Длительность"
-          :items="durations"
-          item-value="id"
-          item-title="label"
-        />
-
-        <VBtn color="secondary" :loading="loadingSearch" @click="searchTemplate"> Показать </VBtn>
       </VCard>
 
       <div v-if="loadingSearch" class="d-flex justify-center">
@@ -58,18 +48,17 @@
   import type { Item } from '~/types/checklist';
 
   const checklistStore = useChecklistsStore();
-  const { getDurations, getTripTypes } = checklistStore;
-  const { tripTypes, durations } = storeToRefs(checklistStore);
+  const { getTripTypes } = checklistStore;
+  const { tripTypes } = storeToRefs(checklistStore);
 
   const { pending } = await useLazyAsyncData(() => {
-    return Promise.all([getDurations(), getTripTypes()]);
+    return getTripTypes();
   });
 
   const services = useServices();
 
   const searchForm = ref({
-    tripTypeId: null,
-    durationId: null
+    tripTypeId: null
   });
 
   const loadingSearch = ref(false);
@@ -80,12 +69,12 @@
   });
 
   const searchTemplate = async () => {
-    if (!searchForm.value.tripTypeId || !searchForm.value.durationId) return;
+    if (!searchForm.value.tripTypeId) return;
 
     loadingSearch.value = true;
 
     try {
-      checklistActive.value = await services.checklist.getChecklist(searchForm.value.tripTypeId, searchForm.value.durationId);
+      checklistActive.value = await services.checklist.getChecklist(searchForm.value.tripTypeId);
     } catch {
       checklistActive.value = {
         id: 0,
@@ -122,6 +111,13 @@
       }
     ]
   });
+
+  watch(
+    () => searchForm.value.tripTypeId,
+    () => {
+      searchTemplate();
+    }
+  );
 </script>
 
 <style scoped>
@@ -132,11 +128,8 @@
   }
 
   .search {
-    display: grid;
-    grid-template-columns: 1fr 1fr max-content;
-    gap: 16px;
     width: 100%;
-    max-width: 1000px;
+    max-width: 650px;
     padding: 24px;
     margin-bottom: 32px;
   }

@@ -3,7 +3,7 @@
     <h2 class="text-h5 mb-6">Восстановление пароля</h2>
 
     <VForm class="mb-6" @submit.prevent="handleSubmit">
-      <v-text-field v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
+      <VTextField v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
 
       <VBtn type="submit" color="secondary" :loading="loading" block> Восстановить </VBtn>
     </VForm>
