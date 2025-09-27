@@ -4,9 +4,10 @@
       :label="item.customName || item.item.name"
       :model-value="item.isChecked"
       hide-details
+      :disabled="public"
       @update:model-value="(event) => setChecked(item.id, event)"
     />
-    <VBtn :icon="mdiDelete" color="red-lighten-1" variant="text" density="compact" :loading="loading" @click="removeItem" />
+    <VBtn v-if="!public" :icon="mdiDelete" color="red-lighten-1" variant="text" density="compact" :loading="loading" @click="removeItem" />
   </div>
 </template>
 
@@ -17,6 +18,7 @@
   const props = defineProps<{
     idChecklist: number;
     item: UserChecklistItem;
+    public?: boolean;
   }>();
 
   const emit = defineEmits<{

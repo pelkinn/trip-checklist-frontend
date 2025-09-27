@@ -14,7 +14,16 @@
             Дата создания:
             <span class="font-weight-bold">{{ formatDateTime(checklist?.createdAt) }}</span>
           </p>
-          <VBtn color="red" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
+          <div class="d-flex flex-column align-start">
+            <div class="d-flex mb-6">
+              <VBtn :variant="checklist?.publicToken ? 'outlined' : undefined" class="mr-2" @click="togglePublic">{{
+                checklist?.publicToken ? 'Закрыть доступ' : 'Открыть доступ'
+              }}</VBtn>
+              <VBtn v-if="checklist?.publicToken" :icon="mdiContentCopy" size="small" @click="copyLink" />
+            </div>
+
+            <VBtn color="red" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
+          </div>
         </div>
         <div class="w-100">
           <p class="text-h5 mb-6">Список вещей</p>
@@ -44,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+  import { mdiContentCopy } from '@mdi/js';
   import type { UserChecklistItem } from '~/types/checklist';
 
   definePageMeta({
@@ -51,6 +61,8 @@
   });
 
   const services = useServices();
+
+  const { showSuccessToast } = useToast();
 
   const route = useRoute();
 
@@ -79,6 +91,26 @@
   const addItem = (item: UserChecklistItem) => {
     checklist.value!.items.push(item);
     visibilityFormAddItem.value = false;
+  };
+
+  const loadingPublic = ref(false);
+
+  const togglePublic = async () => {
+    loadingPublic.value = true;
+    try {
+      const response = await services.checklist.togglePublic(idChecklist.value);
+      checklist.value = response;
+    } catch (err: any) {
+      console.log(err);
+    } finally {
+      loadingPublic.value = false;
+    }
+  };
+
+  const copyLink = () => {
+    const rootUrl = window.location.origin;
+    navigator.clipboard.writeText(`${rootUrl}/s/${checklist.value?.publicToken}`);
+    showSuccessToast('Ссылка скопирована в буфер обмена');
   };
 </script>
 

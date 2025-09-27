@@ -60,4 +60,14 @@ export class ChecklistService {
       }
     });
   }
+
+  togglePublic(id: number) {
+    return this.api<UserChecklist>(`/user-checklist/${id}/toggle-share`, {
+      method: 'post'
+    });
+  }
+
+  getUserChecklistPublic(token: string) {
+    return this.api<UserChecklist>(`/s/${token}`);
+  }
 }
