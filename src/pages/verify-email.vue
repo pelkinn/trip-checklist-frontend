@@ -4,7 +4,9 @@
 
     <div v-else-if="!error" class="d-flex flex-column justify-center align-center">
       <VIcon :icon="mdiCheckCircleOutline" color="success" size="64" class="mb-6" />
-      <p class="text-h5">Вам отправлено письмо на почту</p>
+      <p class="text-h5">Вы успешно зарегистрировались</p>
+
+      <VBtn class="mt-16" to="/auth">Войти</VBtn>
     </div>
 
     <div v-else class="d-flex flex-column justify-center align-center">
