@@ -28,14 +28,14 @@
 </template>
 
 <script setup lang="ts">
-  const authStore = useUserStore()
-  const { user } = storeToRefs(authStore)
-  const { logout } = authStore
+  const authStore = useUserStore();
+  const { user } = storeToRefs(authStore);
+  const { logout } = authStore;
 
   const logoutFn = () => {
-    logout()
-    navigateTo('/')
-  }
+    logout();
+    navigateTo('/');
+  };
 </script>
 
 <style scoped>

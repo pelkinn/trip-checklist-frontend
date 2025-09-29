@@ -3,66 +3,54 @@
     <h2 class="text-h5 mb-6">Восстановление пароля</h2>
 
     <VForm class="mb-6" @submit.prevent="handleSubmit">
-      <v-text-field
-        v-model="v$.email.$model"
-        label="Email"
-        type="email"
-        :error-messages="getErrorMessage(v$.email)"
-      />
+      <VTextField v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
 
-      <VBtn type="submit" color="secondary" :loading="loading" block>
-        Восстановить
-      </VBtn>
+      <VBtn type="submit" color="secondary" :loading="loading" block> Восстановить </VBtn>
     </VForm>
 
-    <p
-      class="text-body-2 text-primary cursor-pointer"
-      @click="emit('back-to-login')"
-    >
-      Войти
-    </p>
+    <p class="text-body-2 text-primary cursor-pointer" @click="emit('backToLogin')">Войти</p>
   </VCard>
 </template>
 
 <script setup lang="ts">
-  import { useVuelidate } from '@vuelidate/core'
-  import { email, helpers, required } from '@vuelidate/validators'
+  import { useVuelidate } from '@vuelidate/core';
+  import { email, helpers, required } from '@vuelidate/validators';
 
   const emit = defineEmits<{
-    (e: 'back-to-login'): void
-  }>()
+    (e: 'backToLogin'): void;
+  }>();
 
-  const services = useServices()
+  const services = useServices();
 
-  const loading = ref(false)
+  const loading = ref(false);
 
   const form = ref({
-    email: '',
-  })
+    email: ''
+  });
 
   const rules = {
     email: {
       required: helpers.withMessage('Обязательное поле', required),
-      email: helpers.withMessage('Некорректный Email', email),
-    },
-  }
+      email: helpers.withMessage('Некорректный Email', email)
+    }
+  };
 
-  const v$ = useVuelidate(rules, form)
+  const v$ = useVuelidate(rules, form);
 
   const handleSubmit = async () => {
     if (!(await v$.value.$validate())) {
-      return
+      return;
     }
 
-    loading.value = true
+    loading.value = true;
     try {
       await services.auth.forgotPassword({
-        email: form.value.email,
-      })
+        email: form.value.email
+      });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 </script>

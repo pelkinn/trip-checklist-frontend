@@ -6,24 +6,9 @@
         с персональными чеклистами
       </h2>
       <div class="d-flex justify-center">
-        <img
-          v-if="currentForm === 'login'"
-          src="/assets/images/img1.webp"
-          alt=""
-          class="img"
-        />
-        <img
-          v-if="currentForm === 'register'"
-          src="/assets/images/img2.webp"
-          alt=""
-          class="img"
-        />
-        <img
-          v-if="currentForm === 'forgot-password'"
-          src="/assets/images/img3.webp"
-          alt=""
-          class="img"
-        />
+        <img v-if="currentForm === 'login'" src="/assets/images/img1.webp" alt="" class="img" />
+        <img v-if="currentForm === 'register'" src="/assets/images/img2.webp" alt="" class="img" />
+        <img v-if="currentForm === 'forgot-password'" src="/assets/images/img3.webp" alt="" class="img" />
       </div>
     </div>
 
@@ -34,32 +19,25 @@
         @forgot-password="currentForm = 'forgot-password'"
       />
 
-      <AuthRegisterForm
-        v-else-if="currentForm === 'register'"
-        @login="currentForm = 'login'"
-      />
+      <AuthRegisterForm v-else-if="currentForm === 'register'" @login="currentForm = 'login'" />
 
-      <AuthForgotPasswordForm
-        v-else-if="currentForm === 'forgot-password'"
-        @back-to-login="currentForm = 'login'"
-      />
+      <AuthForgotPasswordForm v-else-if="currentForm === 'forgot-password'" @back-to-login="currentForm = 'login'" />
     </div>
   </VContainer>
 </template>
 
 <script setup lang="ts">
-  const currentForm = ref<'login' | 'register' | 'forgot-password'>('login')
+  const currentForm = ref<'login' | 'register' | 'forgot-password'>('login');
 
   useHead({
     title: 'Авторизация - Trip Checklist',
     meta: [
       {
         name: 'description',
-        content:
-          'Войдите в систему или зарегистрируйтесь для создания персональных чеклистов путешествий',
-      },
-    ],
-  })
+        content: 'Войдите в систему или зарегистрируйтесь для создания персональных чеклистов путешествий'
+      }
+    ]
+  });
 </script>
 
 <style scoped>

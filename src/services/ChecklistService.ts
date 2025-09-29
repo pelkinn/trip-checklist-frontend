@@ -1,13 +1,6 @@
-import type { $Fetch } from 'nitropack'
-import type { RuntimeConfig } from 'nuxt/schema'
-import type {
-  CreateUserChecklist,
-  Duration,
-  Item,
-  TripType,
-  UserChecklist,
-  UserChecklistItemBodyUpdate,
-} from '~/types/checklist'
+import type { $Fetch } from 'nitropack';
+import type { RuntimeConfig } from 'nuxt/schema';
+import type { CreateUserChecklist, Item, TripType, UserChecklist, UserChecklistItem, UserChecklistItemBodyUpdate } from '~/types/checklist';
 
 export class ChecklistService {
   constructor(
@@ -16,48 +9,74 @@ export class ChecklistService {
   ) {}
 
   getTypes() {
-    return this.api<TripType[]>(`/trip-type`)
+    return this.api<TripType[]>(`/trip-type`);
   }
 
-  getDurations() {
-    return this.api<Duration[]>(`/duration`)
-  }
-
-  getChecklist(tripTypeId: number, durationId: number) {
+  getChecklist(tripTypeId: number) {
     return this.api<{ id: number; items: Item[] }>('/checklist', {
-      params: { tripTypeId, durationId },
-    })
+      params: { tripTypeId }
+    });
   }
 
   getUserChecklists() {
-    return this.api<UserChecklist[]>('/user-checklist')
+    return this.api<UserChecklist[]>('/user-checklist');
   }
 
   getUserChecklist(id: number) {
-    return this.api<UserChecklist>(`/user-checklist/${id}`)
+    return this.api<UserChecklist>(`/user-checklist/${id}`);
   }
 
   createUserChecklist(body: CreateUserChecklist) {
     return this.api<UserChecklist>('/user-checklist', {
       method: 'post',
-      body,
-    })
+      body
+    });
   }
 
   removeUserChecklist(id: number) {
     return this.api(`/user-checklist/${id}`, {
-      method: 'delete',
-    })
+      method: 'delete'
+    });
   }
 
-  updateUserChecklistItem(
-    idChecklist: number,
-    itemId: number,
-    body: UserChecklistItemBodyUpdate
-  ) {
-    return this.api(`/user-checklist/${idChecklist}/items/${itemId}`, {
+  updateUserChecklistItem(idChecklist: number, idItem: number, body: UserChecklistItemBodyUpdate) {
+    return this.api(`/user-checklist/${idChecklist}/items/${idItem}`, {
       method: 'patch',
-      body,
-    })
+      body
+    });
+  }
+
+  removeUserChecklistItem(idChecklist: number, idItem: number) {
+    return this.api(`/user-checklist/${idChecklist}/items/${idItem}`, {
+      method: 'delete'
+    });
+  }
+
+  addUserChecklistItem(id: number, customName: string) {
+    return this.api<UserChecklistItem>(`/user-checklist/${id}/items`, {
+      method: 'post',
+      body: {
+        customName
+      }
+    });
+  }
+
+  togglePublic(id: number) {
+    return this.api<UserChecklist>(`/user-checklist/${id}/toggle-share`, {
+      method: 'post'
+    });
+  }
+
+  getUserChecklistPublic(token: string) {
+    return this.api<UserChecklist>(`/s/${token}`);
+  }
+
+  changeTitleUserChecklist(idChecklist: number, name: string) {
+    return this.api(`/user-checklist/${idChecklist}`, {
+      method: 'patch',
+      body: {
+        name
+      }
+    });
   }
 }

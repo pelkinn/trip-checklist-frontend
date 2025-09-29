@@ -1,12 +1,6 @@
-import type { $Fetch } from 'nitropack'
-import type { RuntimeConfig } from 'nuxt/schema'
-import type {
-  AuthResponse,
-  ForgotPassword,
-  Login,
-  Register,
-  UserProfile,
-} from '~/types/auth'
+import type { $Fetch } from 'nitropack';
+import type { RuntimeConfig } from 'nuxt/schema';
+import type { AuthResponse, ForgotPassword, Login, Register, UserProfile } from '~/types/auth';
 
 export class AuthService {
   constructor(
@@ -17,46 +11,46 @@ export class AuthService {
   async login(body: Login) {
     const result = await this.api<AuthResponse>(`/auth/login`, {
       method: 'post',
-      body,
-    })
+      body
+    });
 
     if ('access_token' in result) {
-      const { access_token: accessToken } = result
-      return { accessToken }
+      const { access_token: accessToken } = result;
+      return { accessToken };
     }
 
-    return result
+    return result;
   }
 
   register(body: Register) {
     return this.api(`/auth/login`, {
       method: 'post',
-      body,
-    })
+      body
+    });
   }
 
   forgotPassword(body: ForgotPassword) {
     return this.api(`/auth/forgot-password`, {
       method: 'post',
-      body,
-    })
+      body
+    });
   }
 
   verifyEmail(token: string) {
     return this.api(`/auth/verify-email`, {
       method: 'post',
-      body: { token },
-    })
+      body: { token }
+    });
   }
 
   resetPassword(body: { token: string; password: string }) {
     return this.api(`/auth/reset-password`, {
       method: 'post',
-      body,
-    })
+      body
+    });
   }
 
   me() {
-    return this.api<UserProfile>(`/auth/me`)
+    return this.api<UserProfile>(`/auth/me`);
   }
 }

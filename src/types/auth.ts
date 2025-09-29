@@ -1,45 +1,45 @@
 export interface Login {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export interface Register {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export interface ForgotPassword {
-  email: string
+  email: string;
 }
 
 export interface ResetPassword {
-  token: string
-  password: string
+  token: string;
+  password: string;
 }
 
 export interface VerifyEmail {
-  token: string
+  token: string;
 }
 
 export interface ResendVerification {
-  email: string
+  email: string;
 }
 
 export interface AuthResponse {
-  id: number
-  email: string
-  access_token: string
+  id: number;
+  email: string;
+  access_token: string;
 }
 
 export interface UserProfile {
-  id: number
-  email: string
-  role: 'USER' | 'ADMIN' | 'MODERATOR'
-  emailVerified: boolean
+  id: number;
+  email: string;
+  role: 'USER' | 'ADMIN' | 'MODERATOR';
+  emailVerified: boolean;
 }
 
 export interface RegisterResponse {
-  id: number
-  email: string
-  emailVerified: boolean
+  id: number;
+  email: string;
+  emailVerified: boolean;
 }

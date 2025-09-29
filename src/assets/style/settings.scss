@@ -3,14 +3,14 @@
 @use 'vuetify/settings' with (
   $body-font-family: (
     'Ruda',
-    sans-serif,
+    sans-serif
   ),
   $container-max-widths: (
     'xs': 1440px,
     'sm': 1440px,
     'md': 1440px,
     'lg': 1440px,
-    'xl': 1440px,
+    'xl': 1440px
   ),
   $button-text-transform: normal
 );

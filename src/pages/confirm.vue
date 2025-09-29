@@ -4,26 +4,14 @@
     <div class="container">
       <img src="/assets/icons/icon1.webp" alt="" class="img" />
       <span class="info">Почта подтверждена!</span>
-      <UiBaseButton
-        size="large"
-        variant="outline"
-        @click="$emit('forgot-password')"
-      >
-        Войти
-      </UiBaseButton>
+      <UiBaseButton size="large" variant="outline" @click="$emit('forgotPassword')"> Войти </UiBaseButton>
     </div>
 
     <div class="container">
       <img src="/assets/icons/icon2.webp" alt="" class="img" />
       <h2>Ошибка!</h2>
       <span class="info">Истек срок действия ссылки</span>
-      <UiBaseButton
-        size="large"
-        variant="outline"
-        @click="$emit('forgot-password')"
-      >
-        Войти
-      </UiBaseButton>
+      <UiBaseButton size="large" variant="outline" @click="$emit('forgotPassword')"> Войти </UiBaseButton>
     </div>
   </div>
 </template>

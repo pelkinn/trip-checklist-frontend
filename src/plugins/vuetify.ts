@@ -1,24 +1,24 @@
-import { mdiClose } from '@mdi/js'
-import { createVuetify } from 'vuetify'
-import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
-import { ru } from 'vuetify/locale'
-import 'vuetify/styles'
-import colors from 'vuetify/util/colors'
+import { mdiClose } from '@mdi/js';
+import { createVuetify } from 'vuetify';
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
+import { ru } from 'vuetify/locale';
+import 'vuetify/styles';
+import colors from 'vuetify/util/colors';
 
-export default defineNuxtPlugin(async nuxtApp => {
+export default defineNuxtPlugin(async (nuxtApp) => {
   const vuetify = createVuetify({
     locale: {
       locale: 'ru',
-      messages: { ru },
+      messages: { ru }
     },
 
     icons: {
       defaultSet: 'mdi',
       aliases: {
         ...aliases,
-        clear: mdiClose,
+        clear: mdiClose
       },
-      sets: { mdi },
+      sets: { mdi }
     },
 
     theme: {
@@ -30,69 +30,68 @@ export default defineNuxtPlugin(async nuxtApp => {
             primary: '#5492c8',
             secondary: '#ff6b1a',
             success: colors.green.base,
-            error: colors.red.base,
-          },
-        },
-      },
+            error: colors.red.base
+          }
+        }
+      }
     },
 
     defaults: {
       VContainerSlim: {
         fluid: true,
-        class: 'v-container-slim',
+        class: 'v-container-slim'
       },
       VChipGroup: {
         color: 'lighten-3',
-        variant: 'outlined',
+        variant: 'outlined'
       },
       VProgressLinear: {
-        color: 'primary',
+        color: 'primary'
       },
       VList: {
-        color: 'secondary',
+        color: 'secondary'
       },
       VTabs: {
-        color: 'primary',
+        color: 'primary'
       },
       VBtn: {
         color: 'primary',
         flat: true,
         variant: 'flat',
-        rounded: 'lg',
-        size: 'large',
+        size: 'large'
       },
       VTextField: {
         variant: 'outlined',
         density: 'comfortable',
-        flat: true,
+        flat: true
       },
       VTextarea: {
         variant: 'outlined',
         density: 'comfortable',
-        flat: true,
+        flat: true
       },
       VSelect: {
         variant: 'outlined',
         flat: true,
         hideDetails: 'auto',
-        density: 'comfortable',
+        density: 'comfortable'
       },
       VCheckbox: {
         color: 'primary',
-        density: 'comfortable',
+        density: 'comfortable'
       },
 
       VRadioGroup: {
-        color: 'success',
+        color: 'success'
       },
       VRadio: {
-        color: 'success',
+        color: 'success'
       },
       VSlider: {
-        color: 'success',
-      },
-    },
-  })
+        color: 'success'
+      }
+    }
+  });
 
-  nuxtApp.vueApp.use(vuetify)
-})
+  nuxtApp.vueApp.use(vuetify);
+});

@@ -5,23 +5,23 @@
 </template>
 
 <script setup lang="ts">
-const { toasts, hideToast } = useToast();
+  const { toasts, hideToast } = useToast();
 </script>
 
 <style lang="scss">
-.base-toast-container {
-  z-index: 10000;
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  .base-toast-container {
+    z-index: 10000;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 
-  .base-alert {
-    &:not(:last-child) {
-      margin-bottom: 8px;
+    .base-alert {
+      &:not(:last-child) {
+        margin-bottom: 8px;
+      }
     }
   }
-}
 </style>

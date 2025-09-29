@@ -9,24 +9,14 @@
         <VProgressCircular indeterminate />
       </div>
 
-      <div
-        v-else-if="data && !data.length"
-        class="d-flex flex-column align-center"
-      >
+      <div v-else-if="data && !data.length" class="d-flex flex-column align-center">
         <div>📋</div>
         <h2>У вас пока нет чеклистов</h2>
-        <p>
-          Создайте свой первый чеклист для путешествия, выбрав тип поездки и
-          длительность
-        </p>
+        <p>Создайте свой первый чеклист для путешествия, выбрав тип поездки и длительность</p>
       </div>
 
       <div v-else class="checklists-grid">
-        <UserChecklistItem
-          v-for="checklist in data"
-          :key="checklist.id"
-          :checklist="checklist"
-        />
+        <UserChecklist v-for="checklist in data" :key="checklist.id" :checklist="checklist" />
       </div>
     </VContainer>
   </div>
@@ -34,14 +24,14 @@
 
 <script setup lang="ts">
   definePageMeta({
-    middleware: 'auth',
-  })
+    middleware: 'auth'
+  });
 
-  const services = useServices()
+  const services = useServices();
 
   const { pending, data } = useLazyAsyncData(() => {
-    return services.checklist.getUserChecklists()
-  })
+    return services.checklist.getUserChecklists();
+  });
 </script>
 
 <style scoped>

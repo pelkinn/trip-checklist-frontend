@@ -5,45 +5,59 @@
     </div>
 
     <div v-else>
-      <div class="d-flex justify-space-between mb-15">
-        <p class="text-h3">{{ checklist?.nameTripType }}</p>
-      </div>
+      <UserChecklistHeader
+        :id-checklist="idChecklist"
+        :title="checklist?.name || checklist!.nameTripType"
+        @change="(event: string) => (checklist!.name = event)"
+      />
       <div class="grid">
         <div>
-          <p class="mb-4">
-            Продолжительность:
-            <span class="font-weight-bold">{{
-              checklist?.duration.label
-            }}</span>
-          </p>
-          <p class="mb-15">
-            Дата создания:
-            <span class="font-weight-bold">{{
-              formatDateTime(checklist?.createdAt)
-            }}</span>
-          </p>
-          <VBtn
-            color="red"
-            variant="tonal"
-            :loading="loadingRemove"
-            @click="removeChecklist"
-            >Удалить</VBtn
-          >
+          <div class="d-flex flex-column align-start">
+            <div class="">
+              <VBtn
+                :variant="checklist?.publicToken ? 'outlined' : undefined"
+                :append-icon="checklist?.publicToken ? '' : mdiShare"
+                @click="togglePublic"
+                >{{ checklist?.publicToken ? 'Закрыть доступ' : 'Поделиться' }}</VBtn
+              >
+              <p v-if="checklist?.publicToken" class="text-primary cursor-pointer mt-6" @click="copyLink">
+                Копировать ссылку <VIcon :icon="mdiContentCopy" />
+              </p>
+            </div>
+
+            <VBtn class="my-16" color="red" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
+            <p>
+              Дата создания:
+              <span class="font-weight-bold">{{ formatDateTime(checklist?.createdAt) }}</span>
+            </p>
+          </div>
         </div>
-        <div>
-          <p class="text-h5 mb-6">Список элементов</p>
-          <div class="d-flex">
-            <div class="d-flex justify-center flex-column">
-              <VCheckbox
-                v-for="item in checklist?.items"
-                :key="item.id"
-                :label="item.customName || item.item.name"
-                :model-value="item.isChecked"
-                hide-details
-                @update:model-value="setChecked(item.id, $event)"
-              />
+        <div class="w-100">
+          <div class="d-flex justify-space-between align-center mb-6">
+            <p class="text-h5">Список вещей</p>
+            <div class="d-flex">
+              <VBtn class="mr-2" size="small" :icon="mdiPlus" @click="visibilityFormAddItem = !visibilityFormAddItem" />
+              <VBtn :icon="mdiDeleteOutline" size="small" variant="outlined" @click="removeMode = !removeMode" />
             </div>
           </div>
+
+          <div v-for="(item, index) in checklist?.items" :key="item.id">
+            <UserChecklistItem
+              :id-checklist="idChecklist"
+              :item="item"
+              :remove-mode="removeMode"
+              @set-checked="(event) => (item.isChecked = event)"
+              @remove="() => checklist!.items.splice(index, 1)"
+            />
+          </div>
+
+          <UserChecklistItemAdd
+            v-if="visibilityFormAddItem"
+            class="mt-6"
+            :id-checklist="idChecklist"
+            @cancel="visibilityFormAddItem = false"
+            @create="addItem"
+          />
         </div>
       </div>
     </div>
@@ -51,52 +65,73 @@
 </template>
 
 <script setup lang="ts">
+  import { mdiContentCopy, mdiDeleteOutline, mdiPlus, mdiShare } from '@mdi/js';
+  import type { UserChecklistItem } from '~/types/checklist';
+
   definePageMeta({
-    middleware: 'auth',
-  })
+    middleware: 'auth'
+  });
 
-  const services = useServices()
+  const services = useServices();
 
-  const route = useRoute()
+  const { showSuccessToast } = useToast();
+
+  const route = useRoute();
+
+  const idChecklist = computed(() => Number(route.params.id));
+
+  const removeMode = ref(false);
 
   const { pending, data: checklist } = useLazyAsyncData(() => {
-    return services.checklist.getUserChecklist(Number(route.params.id))
-  })
+    return services.checklist.getUserChecklist(idChecklist.value);
+  });
 
-  const loadingRemove = ref(false)
+  const visibilityFormAddItem = ref(false);
+
+  const loading = ref(false);
 
   const removeChecklist = async () => {
-    loadingRemove.value = true
+    loading.value = true;
     try {
-      await services.checklist.removeUserChecklist(Number(route.params.id))
-      navigateTo('/checklists')
+      await services.checklist.removeUserChecklist(idChecklist.value);
+      navigateTo('/checklists');
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
     } finally {
-      loadingRemove.value = false
+      loading.value = false;
     }
-  }
+  };
 
-  const setChecked = async (id: number, isChecked: boolean | null) => {
+  const addItem = (item: UserChecklistItem) => {
+    checklist.value!.items.push(item);
+    visibilityFormAddItem.value = false;
+  };
+
+  const loadingPublic = ref(false);
+
+  const togglePublic = async () => {
+    loadingPublic.value = true;
     try {
-      await services.checklist.updateUserChecklistItem(
-        Number(route.params.id),
-        id,
-        {
-          isChecked: Boolean(isChecked),
-        }
-      )
-      const item = checklist.value!.items.find(el => el.id === id)
-      if (item) item.isChecked = Boolean(isChecked)
+      const response = await services.checklist.togglePublic(idChecklist.value);
+      checklist.value = response;
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
+    } finally {
+      loadingPublic.value = false;
     }
-  }
+  };
+
+  const copyLink = () => {
+    const rootUrl = window.location.origin;
+    navigator.clipboard.writeText(`${rootUrl}/s/${checklist.value?.publicToken}`);
+    showSuccessToast('Ссылка скопирована');
+  };
 </script>
 
 <style scoped>
   .grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: minmax(100px, 500px) 500px;
+    gap: 16px;
   }
 </style>
