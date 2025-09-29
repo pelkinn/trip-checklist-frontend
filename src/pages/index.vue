@@ -51,9 +51,13 @@
   const { getTripTypes } = checklistStore;
   const { tripTypes } = storeToRefs(checklistStore);
 
+  const { user } = storeToRefs(useUserStore());
+
   const { pending } = await useLazyAsyncData(() => {
     return getTripTypes();
   });
+
+  const { showInfoToast } = useToast();
 
   const services = useServices();
 
@@ -88,6 +92,11 @@
   const loadingCreateChecklist = ref(false);
 
   const createUserChecklist = async () => {
+    if (!user.value) {
+      showInfoToast('Войдите в систему');
+      return;
+    }
+
     loadingCreateChecklist.value = true;
 
     try {
