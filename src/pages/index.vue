@@ -36,7 +36,7 @@
           </VListItem>
         </VList>
 
-        <VBtn :loading="loadingCreateChecklist" @click="createUserChecklist"> Создать мой чеклист </VBtn>
+        <VBtn :loading="loadingCreateChecklist" @click="createUserChecklist"> Скопировать к себе </VBtn>
       </div>
 
       <img v-else src="/assets/images/img4.webp" alt="" class="img" />

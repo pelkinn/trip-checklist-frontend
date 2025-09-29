@@ -70,4 +70,13 @@ export class ChecklistService {
   getUserChecklistPublic(token: string) {
     return this.api<UserChecklist>(`/s/${token}`);
   }
+
+  changeTitleUserChecklist(idChecklist: number, name: string) {
+    return this.api(`/user-checklist/${idChecklist}`, {
+      method: 'patch',
+      body: {
+        name
+      }
+    });
+  }
 }

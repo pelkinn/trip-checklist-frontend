@@ -17,6 +17,7 @@ export interface UserChecklist {
   nameTripType: string;
   publicToken: string | null;
   items: UserChecklistItem[];
+  name: string;
 }
 
 export interface CreateUserChecklist {

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid-item">
+  <div class="grid-item" :class="{ public: public }">
     <VCheckbox
       :label="item.customName || item.item.name"
       :model-value="item.isChecked"
@@ -7,7 +7,15 @@
       :disabled="public"
       @update:model-value="(event) => setChecked(item.id, event)"
     />
-    <VBtn v-if="!public" :icon="mdiDelete" color="red-lighten-1" variant="text" density="compact" :loading="loading" @click="removeItem" />
+    <VBtn
+      v-if="!public && removeMode"
+      :icon="mdiDelete"
+      color="red-lighten-1"
+      variant="text"
+      density="compact"
+      :loading="loading"
+      @click="removeItem"
+    />
   </div>
 </template>
 
@@ -19,6 +27,7 @@
     idChecklist: number;
     item: UserChecklistItem;
     public?: boolean;
+    removeMode?: boolean;
   }>();
 
   const emit = defineEmits<{
@@ -54,10 +63,22 @@
   };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .grid-item {
     display: grid;
     grid-template-columns: minmax(min-content, 1fr) 50px;
     gap: 16px;
+  }
+
+  .public {
+    :deep(.v-checkbox) {
+      .v-selection-control--disabled {
+        opacity: 1;
+      }
+
+      .v-selection-control__wrapper {
+        opacity: var(--v-disabled-opacity);
+      }
+    }
   }
 </style>
