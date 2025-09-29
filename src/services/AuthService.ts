@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   register(body: Register) {
-    return this.api(`/auth/login`, {
+    return this.api(`/auth/register`, {
       method: 'post',
       body
     });

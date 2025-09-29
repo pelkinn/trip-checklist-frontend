@@ -5,13 +5,22 @@
     <VForm @submit.prevent="handleSubmit">
       <VTextField v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
 
-      <VTextField v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
+      <VTextField
+        v-model="v$.password.$model"
+        label="Пароль"
+        :type="showPassword ? 'text' : 'password'"
+        :error-messages="getErrorMessage(v$.password)"
+        :append-inner-icon="showPassword ? mdiEyeOff : mdiEye"
+        @click:append-inner="showPassword = !showPassword"
+      />
 
       <VTextField
         v-model="v$.confirmPassword.$model"
         label="Повторите пароль"
-        type="password"
+        :type="showPasswordRepeat ? 'text' : 'password'"
         :error-messages="getErrorMessage(v$.confirmPassword)"
+        :append-inner-icon="showPasswordRepeat ? mdiEyeOff : mdiEye"
+        @click:append-inner="showPasswordRepeat = !showPasswordRepeat"
       />
 
       <VBtn color="secondary" :loading="loading" type="submit" block> Зарегистрироваться </VBtn>
@@ -27,6 +36,7 @@
 
 <script setup lang="ts">
   import { LazyAuthRegisterDialogSuccess } from '#components';
+  import { mdiEye, mdiEyeOff } from '@mdi/js';
   import { useVuelidate } from '@vuelidate/core';
   import { email, helpers, minLength, required, sameAs } from '@vuelidate/validators';
 
@@ -39,6 +49,9 @@
   const { openDialog } = useDialog();
 
   const { showErrorToast } = useToast();
+
+  const showPassword = ref(false);
+  const showPasswordRepeat = ref(false);
 
   const form = ref({
     email: '',
@@ -55,7 +68,7 @@
     },
     password: {
       required: helpers.withMessage('Обязательное поле', required),
-      minLength: helpers.withMessage('Обязательное поле', minLength(8)),
+      minLength: helpers.withMessage('Минимум 8 символов', minLength(8)),
       containsDigit: helpers.withMessage('Минимум одна цифра', containsDigit)
     },
     confirmPassword: {
