@@ -24,7 +24,7 @@
 
   const route = useRoute();
 
-  const { pending, error } = useLazyAsyncData(() => {
+  const { pending, error } = await useLazyAsyncData(() => {
     return services.auth.verifyEmail(route.query.token as string);
   });
 </script>
