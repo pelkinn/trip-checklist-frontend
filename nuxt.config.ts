@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: false },
   srcDir: './src/',
+  ssr: false,
   devServer: {
     port: 3001
   },
