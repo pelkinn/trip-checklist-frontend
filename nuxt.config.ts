@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       yandexMetrika: {
-        id: 103233734
+        id: 104334068
       },
       apiBaseUrl: process.env.BASE_URL || 'http://localhost:3000',
       adminLogin: process.env.ADMIN_LOGIN || '',
