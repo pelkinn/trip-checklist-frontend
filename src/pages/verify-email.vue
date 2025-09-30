@@ -12,6 +12,7 @@
     <div v-else class="d-flex flex-column justify-center align-center">
       <VIcon :icon="mdiCloseCircleOutline" color="error" size="64" class="mb-6" />
       <p class="text-h5">Email не подтвержден</p>
+      {{ error }}
     </div>
   </div>
 </template>
