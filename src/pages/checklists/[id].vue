@@ -44,15 +44,27 @@
             </div>
           </div>
 
-          <div v-for="(item, index) in checklist?.items" :key="item.id">
-            <UserChecklistItem
-              :id-checklist="idChecklist"
-              :item="item"
-              :remove-mode="removeMode"
-              @set-checked="(event) => (item.isChecked = event)"
-              @remove="() => checklist!.items.splice(index, 1)"
-            />
-          </div>
+          <Draggable
+            v-model="checklist!.items"
+            group="people"
+            :handle="'.drag-handle'"
+            :animation="150"
+            item-key="id"
+            @change="onListChange"
+          >
+            <template #item="{ element: item, index }">
+              <div class="d-flex align-center">
+                <VBtn :icon="mdiDragVertical" variant="text" density="compact" class="drag-handle" />
+                <UserChecklistItem
+                  :id-checklist="idChecklist"
+                  :item="item"
+                  :remove-mode="removeMode"
+                  @set-checked="(event) => (item.isChecked = event)"
+                  @remove="() => checklist!.items.splice(index, 1)"
+                />
+              </div>
+            </template>
+          </Draggable>
 
           <UserChecklistItemAdd
             v-if="visibilityFormAddItem"
@@ -68,7 +80,8 @@
 </template>
 
 <script setup lang="ts">
-  import { mdiContentCopy, mdiDeleteOutline, mdiPlus, mdiShare } from '@mdi/js';
+  import { mdiContentCopy, mdiDeleteOutline, mdiDragVertical, mdiPlus, mdiShare } from '@mdi/js';
+  import Draggable from 'vuedraggable';
   import type { UserChecklistItem } from '~/types/checklist';
 
   definePageMeta({
@@ -128,6 +141,11 @@
     const rootUrl = window.location.origin;
     navigator.clipboard.writeText(`${rootUrl}/s/${checklist.value?.publicToken}`);
     showSuccessToast('Ссылка скопирована');
+  };
+
+  const onListChange = (evt) => {
+    console.log('Новый индекс', evt.newIndex);
+    console.log('Элемент', evt.moved.element);
   };
 </script>
 
