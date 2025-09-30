@@ -45,6 +45,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         color: 'lighten-3',
         variant: 'outlined'
       },
+      VProgressCircular: {
+        color: 'primary'
+      },
       VProgressLinear: {
         color: 'primary'
       },

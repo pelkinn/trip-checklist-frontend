@@ -1,14 +1,14 @@
 <template>
-  <div class="d-flex justify-space-between mb-15">
-    <VForm v-if="editMode" class="d-flex" @submit.prevent="submit">
-      <VTextField v-model="modelTitle" min-width="400" class="mr-5" />
+  <div class="d-flex justify-space-between w-100">
+    <VForm v-if="editMode" class="d-flex flex-column flex-md-row w-100" @submit.prevent="submit">
+      <VTextField v-model="modelTitle" class="mr-md-5 w-100 w-md-50" />
       <div class="d-flex">
         <VBtn class="mr-2" :loading="loading" type="submit">Сохранить</VBtn>
         <VBtn variant="outlined" @click="editMode = false">Отмена</VBtn>
       </div>
     </VForm>
 
-    <p v-else class="text-h3">{{ title }} <VBtn variant="text" :icon="mdiPencil" @click="editMode = true" /></p>
+    <p v-else class="text-h4">{{ title }} <VBtn variant="text" :icon="mdiPencil" @click="editMode = true" /></p>
   </div>
 </template>
 

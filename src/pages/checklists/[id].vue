@@ -8,31 +8,34 @@
       <UserChecklistHeader
         :id-checklist="idChecklist"
         :title="checklist?.name || checklist!.nameTripType"
+        class="mb-15"
         @change="(event: string) => (checklist!.name = event)"
       />
       <div class="grid">
         <div>
           <div class="d-flex flex-column align-start">
-            <div class="">
-              <VBtn
-                :variant="checklist?.publicToken ? 'outlined' : undefined"
-                :append-icon="checklist?.publicToken ? '' : mdiShare"
-                @click="togglePublic"
-                >{{ checklist?.publicToken ? 'Закрыть доступ' : 'Поделиться' }}</VBtn
-              >
-              <p v-if="checklist?.publicToken" class="text-primary cursor-pointer mt-6" @click="copyLink">
-                Копировать ссылку <VIcon :icon="mdiContentCopy" />
-              </p>
-            </div>
+            <div class="d-flex flex-md-column align-md-start justify-space-between mb-6 w-100">
+              <div>
+                <VBtn
+                  :variant="checklist?.publicToken ? 'outlined' : undefined"
+                  :append-icon="checklist?.publicToken ? '' : mdiShare"
+                  @click="togglePublic"
+                  >{{ checklist?.publicToken ? 'Закрыть доступ' : 'Поделиться' }}</VBtn
+                >
+                <p v-if="checklist?.publicToken" class="text-primary cursor-pointer mt-6" @click="copyLink">
+                  Копировать ссылку <VIcon :icon="mdiContentCopy" />
+                </p>
+              </div>
 
-            <VBtn class="my-16" color="red" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
+              <VBtn color="red" class="mt-0 mt-md-16" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
+            </div>
             <p>
               Дата создания:
               <span class="font-weight-bold">{{ formatDateTime(checklist?.createdAt) }}</span>
             </p>
           </div>
         </div>
-        <div class="w-100">
+        <div class="list">
           <div class="d-flex justify-space-between align-center mb-6">
             <p class="text-h5">Список вещей</p>
             <div class="d-flex">
@@ -128,10 +131,24 @@
   };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .grid {
     display: grid;
-    grid-template-columns: minmax(100px, 500px) 500px;
+    grid-template-columns: 1fr;
     gap: 16px;
+
+    @media #{map.get(v.$display-breakpoints, 'md-and-up')} {
+      grid-template-columns: minmax(100px, 500px) 500px;
+    }
+  }
+
+  .list {
+    grid-row: 1/2;
+    margin-bottom: 32px;
+
+    @media #{map.get(v.$display-breakpoints, 'md-and-up')} {
+      grid-column: 2/3;
+      margin-bottom: 0;
+    }
   }
 </style>

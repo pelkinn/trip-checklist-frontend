@@ -5,7 +5,14 @@
     <VForm @submit.prevent="handleSubmit">
       <VTextField v-model="v$.email.$model" label="Email" type="email" :error-messages="getErrorMessage(v$.email)" />
 
-      <VTextField v-model="v$.password.$model" label="Пароль" type="password" :error-messages="getErrorMessage(v$.password)" />
+      <VTextField
+        v-model="v$.password.$model"
+        label="Пароль"
+        :type="showPassword ? 'text' : 'password'"
+        :append-inner-icon="showPassword ? mdiEyeOff : mdiEye"
+        :error-messages="getErrorMessage(v$.password)"
+        @click:append-inner="showPassword = !showPassword"
+      />
 
       <p class="text-body-2 text-primary cursor-pointer mb-6" @click="emit('forgotPassword')">Забыли пароль?</p>
 
@@ -22,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+  import { mdiEye, mdiEyeOff } from '@mdi/js';
   import useVuelidate from '@vuelidate/core';
   import { email, helpers, minLength, required } from '@vuelidate/validators';
 
@@ -31,6 +39,8 @@
   }>();
 
   const services = useServices();
+
+  const { showErrorToast } = useToast();
 
   const runtimeConfig = useRuntimeConfig();
 
@@ -42,6 +52,8 @@
     email: runtimeConfig.public.adminLogin,
     password: runtimeConfig.public.adminPassword
   });
+
+  const showPassword = ref(false);
 
   const loading = ref(false);
 
@@ -78,6 +90,7 @@
 
       navigateTo('/checklists');
     } catch (err) {
+      showErrorToast('Не верный логин или пароль');
       console.log(err);
     } finally {
       loading.value = false;

@@ -2,7 +2,7 @@
   <div class="checklists-page">
     <VContainer>
       <div class="d-flex justify-space-between mb-10">
-        <h1>Мои чеклисты</h1>
+        <h1 class="text-h4">Мои чеклисты</h1>
       </div>
 
       <div v-if="pending" class="text-center py-8">
@@ -10,8 +10,7 @@
       </div>
 
       <div v-else-if="data && !data.length" class="d-flex flex-column align-center">
-        <div>📋</div>
-        <h2>У вас пока нет чеклистов</h2>
+        <p class="text-h6 mb-2">У вас пока нет чеклистов</p>
         <p>Создайте свой первый чеклист для путешествия, выбрав тип поездки</p>
       </div>
 
@@ -34,10 +33,18 @@
   });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .checklists-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
+
+    @media #{map.get(v.$display-breakpoints, 'sm-and-up')} {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media #{map.get(v.$display-breakpoints, 'md-and-up')} {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
   }
 </style>
