@@ -10,6 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check SSH key format
+        run: |
+          echo "Key length: ${{ secrets.SSH_PRIVATE_KEY }}"
+          echo "First chars: ${{ secrets.SSH_PRIVATE_KEY }}"
+          echo "User: ${{ secrets.SSH_USER }}"
+          echo "Host: ${{ secrets.SSH_HOST }}"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
