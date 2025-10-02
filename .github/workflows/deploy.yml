@@ -12,20 +12,16 @@ jobs:
     steps:
       - name: Fix key format and test SSH
         run: |
-          # Убираем лишние переносы
-          echo "$SSH_KEY" | tr -s '\n' > fixed_key
-          chmod 600 fixed_key
+          # Убираем \r (Windows line endings)
+          echo "$SSH_KEY" | sed 's/\r$//' > clean_key
+          chmod 600 clean_key
           
-          echo "Fixed key length: $(wc -c < fixed_key)"
-          echo "Fixed key lines: $(wc -l < fixed_key)"
+          echo "Original length: ${#SSH_KEY}"
+          echo "Clean length: $(wc -c < clean_key)"
+          echo "Clean lines: $(wc -l < clean_key)"
           
-          # Тестируем подключение
-          ssh -o StrictHostKeyChecking=no -i fixed_key $SSH_USER@$SSH_HOST "echo '✅ SUCCESS!'"
-
-        env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          # Тестируем
+          ssh -o ConnectTimeout=10 -i clean_key $SSH_USER@$SSH_HOST "echo '✅ SUCCESS!'"
           
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
