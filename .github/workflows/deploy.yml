@@ -21,6 +21,11 @@ jobs:
           
           # Тестируем подключение
           ssh -o StrictHostKeyChecking=no -i fixed_key $SSH_USER@$SSH_HOST "echo '✅ SUCCESS!'"
+
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
           
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
