@@ -10,6 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup SSH manually
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Добавляем хост в known_hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          
+          echo "Testing connection..."
+          ssh -o ConnectTimeout=10 -i ~/.ssh/deploy_key $SSH_USER@$SSH_HOST "echo '✅ SUCCESS: Connected as user: \$(whoami)'"
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
           
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
