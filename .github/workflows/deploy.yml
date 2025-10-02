@@ -10,17 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Тест
-        run: |
-          echo "$SSH_KEY" > key
-          chmod 600 key
-          echo "🔑 Публичный ключ из GitHub Secrets:"
-          ssh-keygen -y -f key
-        env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -29,8 +18,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Успешное подключение!"
-            # cd /var/www/trip-checklist-frontend
-            # git reset --hard
+            # cd /
+            # cd /opt/apps/trip-checklist-frontend
             # git pull origin main
-            # npm install
-            # npx nuxt generate
+            # cd /opt/apps/nginx
+            # docker compose up --build trip-checklist-frontend-build
