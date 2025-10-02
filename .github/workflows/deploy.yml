@@ -10,18 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check SSH key format
-        run: |
-          echo "Key length: ${#SSH_KEY}"
-          if [[ "$SSH_KEY" == *"BEGIN OPENSSH PRIVATE KEY"* ]]; then
-            echo "✅ Key format: OPENSSH"
-          elif [[ "$SSH_KEY" == *"BEGIN RSA PRIVATE KEY"* ]]; then
-            echo "✅ Key format: RSA"
-          else
-            echo "❌ Unknown key format"
-          fi
-        env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
@@ -29,6 +17,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script_timeout: 30s
+          debug: true
           script: |
             echo "Успешное подключение!"
             # cd /var/www/trip-checklist-frontend
