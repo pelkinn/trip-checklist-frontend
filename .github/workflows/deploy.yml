@@ -10,18 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fix key format and test SSH
+      - name: Тест
         run: |
-          # Убираем \r (Windows line endings)
-          echo "$SSH_KEY" | sed 's/\r$//' > clean_key
-          chmod 600 clean_key
-          
-          echo "Original length: ${#SSH_KEY}"
-          echo "Clean length: $(wc -c < clean_key)"
-          echo "Clean lines: $(wc -l < clean_key)"
-          
-          # Тестируем
-          ssh -o ConnectTimeout=10 -i clean_key $SSH_USER@$SSH_HOST "echo '✅ SUCCESS!'"
+          echo "$SSH_KEY" > key
+          chmod 600 key
+          ssh -o ConnectTimeout=10 -i key $SSH_USER@$SSH_HOST "echo '✅ Root connection works!'"
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
           
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
@@ -29,9 +26,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script_timeout: 30s
-          debug: true
           script: |
             echo "Успешное подключение!"
             # cd /var/www/trip-checklist-frontend
