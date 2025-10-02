@@ -14,7 +14,8 @@ jobs:
         run: |
           echo "$SSH_KEY" > key
           chmod 600 key
-          ssh -o StrictHostKeyChecking=no -v -i key $SSH_USER@$SSH_HOST
+          echo "🔑 Публичный ключ из GitHub Secrets:"
+          ssh-keygen -y -f key
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
