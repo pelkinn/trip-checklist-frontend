@@ -12,12 +12,16 @@ jobs:
     steps:
       - name: Check SSH key format
         run: |
-          echo "Key length: ${{ secrets.SSH_PRIVATE_KEY }}"
-          echo "First chars: ${{ secrets.SSH_PRIVATE_KEY }}"
-          echo "User: ${{ secrets.SSH_USER }}"
-          echo "Host: ${{ secrets.SSH_HOST }}"
+          echo "Key length: ${#SSH_KEY}"
+          if [[ "$SSH_KEY" == *"BEGIN OPENSSH PRIVATE KEY"* ]]; then
+            echo "✅ Key format: OPENSSH"
+          elif [[ "$SSH_KEY" == *"BEGIN RSA PRIVATE KEY"* ]]; then
+            echo "✅ Key format: RSA"
+          else
+            echo "❌ Unknown key format"
+          fi
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           
       - name: SSH and deploy
         uses: appleboy/ssh-action@v1.0.3
