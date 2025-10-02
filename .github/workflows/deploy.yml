@@ -14,7 +14,7 @@ jobs:
         run: |
           echo "$SSH_KEY" > key
           chmod 600 key
-          ssh -o ConnectTimeout=10 -i key $SSH_USER@$SSH_HOST "echo '✅ Root connection works!'"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key $SSH_USER@$SSH_HOST "echo '✅ Success!'"
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
