@@ -26,7 +26,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo secrets.SSH_USER
+            echo "Успешное подключение!"
             # cd /var/www/trip-checklist-frontend
             # git reset --hard
             # git pull origin main
