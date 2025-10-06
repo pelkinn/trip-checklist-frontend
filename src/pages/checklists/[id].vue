@@ -143,9 +143,26 @@
     showSuccessToast('Ссылка скопирована');
   };
 
-  const onListChange = (evt) => {
-    console.log('Новый индекс', evt.newIndex);
-    console.log('Элемент', evt.moved.element);
+  interface DraggableItem {
+    id: string | number;
+    [key: string]: any;
+  }
+
+  interface DragChangeEvent<T = DraggableItem> {
+    moved: {
+      newIndex: number;
+      oldIndex: number;
+      element: T;
+    };
+  }
+
+  const onListChange = async (evt: DragChangeEvent) => {
+    console.log(evt);
+    try {
+      await services.checklist.updateUserChecklistItem(idChecklist.value, Number(evt.moved.element.id), { order: evt.moved.newIndex + 1 });
+    } catch (err: any) {
+      console.log(err);
+    }
   };
 </script>
 
