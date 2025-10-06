@@ -157,7 +157,6 @@
   }
 
   const onListChange = async (evt: DragChangeEvent) => {
-    console.log(evt);
     try {
       await services.checklist.updateUserChecklistItem(idChecklist.value, Number(evt.moved.element.id), { order: evt.moved.newIndex + 1 });
     } catch (err: any) {
