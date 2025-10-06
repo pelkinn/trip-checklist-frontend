@@ -14,7 +14,7 @@
       </div>
 
       <VCard v-else class="search" elevation="4">
-        <VSelect
+        <VAutocomplete
           v-model="searchForm.tripTypeId"
           :options="tripTypes"
           label="Тип поездки"

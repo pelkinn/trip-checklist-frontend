@@ -79,6 +79,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         hideDetails: 'auto',
         density: 'comfortable'
       },
+      VAutocomplete: {
+        variant: 'outlined',
+        flat: true,
+        hideDetails: 'auto',
+        density: 'comfortable'
+      },
       VCheckbox: {
         color: 'primary',
         density: 'comfortable'
