@@ -8,6 +8,7 @@ export interface UserChecklistItem {
   customName: string | null;
   isChecked: boolean;
   item: Item;
+  order: number;
 }
 
 export interface UserChecklist {
@@ -48,4 +49,5 @@ export interface UserChecklistItemBodyUpdate {
   idItem?: number;
   customName?: string;
   isChecked?: boolean;
+  order?: number;
 }
