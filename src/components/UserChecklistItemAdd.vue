@@ -13,6 +13,7 @@
 
   const props = defineProps<{
     idChecklist: number;
+    order: number;
   }>();
 
   const emit = defineEmits<{
@@ -29,7 +30,7 @@
   const addItem = async () => {
     loading.value = true;
     try {
-      const item = await services.checklist.addUserChecklistItem(props.idChecklist, name.value);
+      const item = await services.checklist.addUserChecklistItem(props.idChecklist, name.value, props.order);
       emit('create', item);
     } catch (err: any) {
       console.log(err);

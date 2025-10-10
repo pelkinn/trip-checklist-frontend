@@ -70,6 +70,7 @@
             v-if="visibilityFormAddItem"
             class="mt-6"
             :id-checklist="idChecklist"
+            :order="orderForCreate"
             @cancel="visibilityFormAddItem = false"
             @create="addItem"
           />
@@ -101,8 +102,6 @@
   const { pending, data: checklist } = useLazyAsyncData(() => {
     return services.checklist.getUserChecklist(idChecklist.value);
   });
-
-  const visibilityFormAddItem = ref(false);
 
   const loading = ref(false);
 
@@ -163,6 +162,10 @@
       console.log(err);
     }
   };
+
+  const visibilityFormAddItem = ref(false);
+
+  const orderForCreate = computed(() => checklist.value!.items.length + 1);
 </script>
 
 <style scoped lang="scss">
