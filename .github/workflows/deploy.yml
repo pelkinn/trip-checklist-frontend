@@ -35,8 +35,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Успешное подключение!"
-            # cd /
-            # cd /opt/apps/trip-checklist-frontend
-            # git pull origin main
-            # cd /opt/apps/nginx
-            # docker compose up --build trip-checklist-frontend-build
+            cd /
+            cd /opt/apps/trip-checklist-frontend
+            git pull origin main
+            cd /opt/apps/nginx
+            docker compose up --build trip-checklist-frontend-build
