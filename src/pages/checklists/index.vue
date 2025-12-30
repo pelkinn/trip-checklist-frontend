@@ -3,6 +3,7 @@
     <VContainer>
       <div class="d-flex justify-space-between mb-10">
         <h1 class="text-h4">Мои чеклисты</h1>
+        <VBtn color="primary" @click="openCreateDialog">Создать новый</VBtn>
       </div>
 
       <div v-if="pending" class="text-center py-8">
@@ -22,15 +23,30 @@
 </template>
 
 <script setup lang="ts">
+  import { LazyChecklistCreateChecklistDialog } from '#components';
+
   definePageMeta({
     middleware: 'auth'
   });
 
   const services = useServices();
 
-  const { pending, data } = useLazyAsyncData(() => {
+  const { pending, data, refresh } = useLazyAsyncData(() => {
     return services.checklist.getUserChecklists();
   });
+
+  const { openDialog } = useDialog();
+
+  const openCreateDialog = () => {
+    openDialog({
+      component: LazyChecklistCreateChecklistDialog,
+      listeners: {
+        created: () => {
+          refresh();
+        }
+      }
+    });
+  };
 </script>
 
 <style scoped lang="scss">

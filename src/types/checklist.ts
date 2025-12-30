@@ -22,7 +22,8 @@ export interface UserChecklist {
 }
 
 export interface CreateUserChecklist {
-  checklistId: number;
+  checklistId?: number;
+  name?: string;
 }
 
 export interface TripType {
