@@ -8,8 +8,8 @@
       @update:model-value="(event) => setChecked(item.id, event)"
     />
     <VBtn
-      v-if="!public && removeMode"
-      :icon="mdiDelete"
+      v-if="!public"
+      :icon="mdiDeleteOutline"
       color="red-lighten-1"
       variant="text"
       density="compact"
@@ -20,14 +20,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { mdiDelete } from '@mdi/js';
+  import { mdiDeleteOutline } from '@mdi/js';
   import type { UserChecklistItem } from '~/types/checklist';
 
   const props = defineProps<{
     idChecklist: number;
     item: UserChecklistItem;
     public?: boolean;
-    removeMode?: boolean;
   }>();
 
   const emit = defineEmits<{
@@ -68,6 +67,8 @@
     display: grid;
     grid-template-columns: minmax(min-content, 1fr) 50px;
     gap: 16px;
+    flex-grow: 1;
+    align-items: center;
   }
 
   .public {

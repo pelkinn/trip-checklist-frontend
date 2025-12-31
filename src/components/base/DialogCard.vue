@@ -58,7 +58,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 48px;
+    padding: 24px;
 
     & > *:not(:last-child) {
       margin-bottom: 24px;
@@ -86,5 +86,9 @@
 
   .other {
     height: 100%;
+  }
+
+  .title {
+    padding-right: 48px;
   }
 </style>

@@ -4,8 +4,11 @@
       <div class="welcome-content">
         <h1 class="text-primary">Trip Checklist</h1>
         <p>
-          Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых поездок: выбирайте готовые шаблоны под разные типы путешествий и
-          продолжительность, добавляйте свои пункты и отслеживайте прогресс сборов
+          {{
+            user
+              ? 'Создавайте удобные чек-листы для любых поездок: выбирайте готовые шаблоны под разные типы путешествий и продолжительность, добавляйте свои пункты и отслеживайте прогресс сборов'
+              : 'Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых поездок: выбирайте готовые шаблоны под разные типы путешествий и продолжительность, добавляйте свои пункты и отслеживайте прогресс сборов'
+          }}
         </p>
       </div>
 
@@ -17,7 +20,7 @@
         <VAutocomplete
           v-model="searchForm.tripTypeId"
           :options="tripTypes"
-          label="Тип поездки"
+          label="Тип мероприятия"
           :items="tripTypes"
           item-value="id"
           item-title="name"
@@ -30,13 +33,12 @@
       </div>
 
       <div v-else-if="checklistActive.items.length > 0">
+        <VBtn :loading="loadingCreateChecklist" block class="mb-6" @click="createUserChecklist"> Скопировать к себе </VBtn>
         <VList class="mb-6">
           <VListItem v-for="item in checklistActive?.items" :key="item.id" class="template-item">
             <span class="font-weight-medium">{{ item.name }}</span>
           </VListItem>
         </VList>
-
-        <VBtn :loading="loadingCreateChecklist" @click="createUserChecklist"> Скопировать к себе </VBtn>
       </div>
 
       <img v-else src="/assets/images/img4.webp" alt="" class="img" />

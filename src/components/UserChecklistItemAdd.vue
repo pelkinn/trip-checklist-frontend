@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VTextField v-model="name" density="compact" />
+    <VTextField ref="textFieldRef" v-model="name" density="compact" />
     <div class="d-flex">
       <VBtn class="mr-2" density="compact" :loading="loading" @click="addItem">Сохранить</VBtn>
       <VBtn density="compact" variant="outlined" @click="emit('cancel')">Отменить</VBtn>
@@ -26,6 +26,19 @@
   const name = ref('');
 
   const loading = ref(false);
+
+  const textFieldRef = ref<any>(null);
+
+  onMounted(() => {
+    nextTick(() => {
+      if (textFieldRef.value) {
+        const input = textFieldRef.value.$el?.querySelector('input');
+        if (input) {
+          input.focus();
+        }
+      }
+    });
+  });
 
   const addItem = async () => {
     loading.value = true;

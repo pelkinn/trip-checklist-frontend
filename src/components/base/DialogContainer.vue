@@ -3,7 +3,7 @@
     v-for="[key, dialog] in dialogs"
     :key="key"
     v-bind="{
-      ...(xs || dialog.dialogProps?.fullscreen ? { fullscreen: true } : { width: 600 }),
+      ...(dialog.dialogProps?.fullscreen ? { fullscreen: true } : { width: 600 }),
       ...dialog.dialogProps
     }"
     :model-value="dialogsOpened.get(key)"

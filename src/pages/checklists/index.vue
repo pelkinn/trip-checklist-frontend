@@ -1,8 +1,8 @@
 <template>
   <div class="checklists-page">
     <VContainer>
-      <div class="d-flex justify-space-between mb-10">
-        <h1 class="text-h4">Мои чеклисты</h1>
+      <div class="d-flex flex-column flex-sm-row justify-space-between mb-10">
+        <h1 class="text-h4 mb-4 mb-sm-0">Мои чеклисты</h1>
         <VBtn color="primary" @click="openCreateDialog">Создать новый</VBtn>
       </div>
 

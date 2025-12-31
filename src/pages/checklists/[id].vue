@@ -40,25 +40,16 @@
             <p class="text-h5">Список вещей</p>
             <div class="d-flex">
               <VBtn class="mr-2" size="small" :icon="mdiPlus" @click="visibilityFormAddItem = !visibilityFormAddItem" />
-              <VBtn :icon="mdiDeleteOutline" size="small" variant="outlined" @click="removeMode = !removeMode" />
             </div>
           </div>
 
-          <Draggable
-            v-model="checklist!.items"
-            group="people"
-            :handle="'.drag-handle'"
-            :animation="150"
-            item-key="id"
-            @change="onListChange"
-          >
+          <Draggable v-model="checklist!.items" group="people" :animation="150" item-key="id" @change="onListChange">
             <template #item="{ element: item, index }">
               <div class="d-flex align-center">
                 <VBtn :icon="mdiDragVertical" variant="text" density="compact" class="drag-handle" />
                 <UserChecklistItem
                   :id-checklist="idChecklist"
                   :item="item"
-                  :remove-mode="removeMode"
                   @set-checked="(event) => (item.isChecked = event)"
                   @remove="() => checklist!.items.splice(index, 1)"
                 />
@@ -81,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-  import { mdiContentCopy, mdiDeleteOutline, mdiDragVertical, mdiPlus, mdiShare } from '@mdi/js';
+  import { mdiContentCopy, mdiDragVertical, mdiPlus, mdiShare } from '@mdi/js';
   import Draggable from 'vuedraggable';
   import type { UserChecklistItem } from '~/types/checklist';
 
@@ -96,8 +87,6 @@
   const route = useRoute();
 
   const idChecklist = computed(() => Number(route.params.id));
-
-  const removeMode = ref(false);
 
   const { pending, data: checklist } = useLazyAsyncData(() => {
     return services.checklist.getUserChecklist(idChecklist.value);
