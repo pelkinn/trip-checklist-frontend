@@ -2,12 +2,12 @@
   <VContainer class="container">
     <div class="d-flex flex-column align-center">
       <div class="welcome-content">
-        <h1 class="text-primary">Trip Checklist</h1>
+        <h1 class="text-primary">Персональные чеклисты для путешествий</h1>
         <p>
           {{
             user
-              ? 'Создавайте удобные чек-листы для любых поездок: выбирайте готовые шаблоны под разные типы путешествий и продолжительность, добавляйте свои пункты и отслеживайте прогресс сборов'
-              : 'Зарегистрируйтесь, чтобы создавать удобные чек-листы для любых поездок: выбирайте готовые шаблоны под разные типы путешествий и продолжительность, добавляйте свои пункты и отслеживайте прогресс сборов'
+              ? 'Выбирайте готовые шаблоны чек-листов под разные типы путешествий или создавайте свои. Отслеживайте прогресс сборов, делитесь списками с друзьями и ничего не забудьте.'
+              : 'Создавайте персональные чек-листы для путешествий. Выбирайте готовые шаблоны или добавляйте свои пункты. Зарегистрируйтесь, чтобы сохранять и отслеживать свои списки.'
           }}
         </p>
       </div>
@@ -21,7 +21,7 @@
           <VAutocomplete
             v-model="searchForm.tripTypeId"
             :options="tripTypes"
-            label="Тип мероприятия"
+            label="Тип поездки"
             :items="tripTypes"
             item-value="id"
             item-title="name"
@@ -32,11 +32,9 @@
           <VAutocomplete
             v-model="searchForm.checklistId"
             :items="availableChecklists"
-            label="Чеклист"
+            label="Готовый чеклист"
             item-value="id"
-            :item-title="
-              (item) => (item.name ? `${item.name} (${item.itemsCount} пунктов)` : `${item.tripTypeName} (${item.itemsCount} пунктов)`)
-            "
+            :item-title="(item) => item.name || item.tripTypeName"
             :loading="loadingChecklists"
             :disabled="!searchForm.tripTypeId"
             @update:model-value="onChecklistChange"
@@ -125,7 +123,7 @@
 
   const createUserChecklist = async () => {
     if (!user.value) {
-      showInfoToast('Войдите в систему');
+      await navigateTo('/auth');
       return;
     }
 
