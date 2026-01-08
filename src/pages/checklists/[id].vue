@@ -38,12 +38,9 @@
         <div class="list">
           <div class="d-flex justify-space-between align-center mb-6">
             <p class="text-h5">Список вещей</p>
-            <div class="d-flex">
-              <VBtn class="mr-2" size="small" :icon="mdiPlus" @click="visibilityFormAddItem = !visibilityFormAddItem" />
-            </div>
           </div>
 
-          <Draggable v-model="checklist!.items" group="people" :animation="150" item-key="id" @change="onListChange">
+          <Draggable v-model="checklist!.items" group="people" :animation="150" item-key="id" handle=".drag-handle" @change="onListChange">
             <template #item="{ element: item, index }">
               <div class="d-flex align-center">
                 <VBtn :icon="mdiDragVertical" variant="text" density="compact" class="drag-handle" />
@@ -56,6 +53,8 @@
               </div>
             </template>
           </Draggable>
+
+          <VBtn class="mt-4" :prepend-icon="mdiPlus" @click="visibilityFormAddItem = !visibilityFormAddItem">Добавить элемент</VBtn>
 
           <UserChecklistItemAdd
             v-if="visibilityFormAddItem"

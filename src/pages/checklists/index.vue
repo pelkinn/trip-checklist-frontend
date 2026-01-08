@@ -1,9 +1,12 @@
 <template>
   <div class="checklists-page">
     <VContainer>
-      <div class="d-flex flex-column flex-sm-row justify-space-between mb-10">
-        <h1 class="text-h4 mb-4 mb-sm-0">Мои чеклисты</h1>
-        <VBtn color="primary" @click="openCreateDialog">Создать новый</VBtn>
+      <div class="d-flex flex-column flex-md-row justify-space-between mb-10">
+        <h1 class="text-h4 mb-4 mb-md-0">Мои чеклисты</h1>
+        <div class="d-flex flex-column flex-md-row gap-2">
+          <VBtn class="mb-2 mb-md-0 mr-md-2" variant="outlined" @click="openCreateEmptyDialog">Создать пустой</VBtn>
+          <VBtn color="primary" @click="openCreateFromTemplateDialog">Создать из шаблона</VBtn>
+        </div>
       </div>
 
       <div v-if="pending" class="text-center py-8">
@@ -23,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { LazyChecklistCreateChecklistDialog } from '#components';
+  import { LazyChecklistCreateChecklistDialog, LazyChecklistCreateChecklistFromTemplateDialog } from '#components';
 
   definePageMeta({
     middleware: 'auth'
@@ -37,9 +40,20 @@
 
   const { openDialog } = useDialog();
 
-  const openCreateDialog = () => {
+  const openCreateEmptyDialog = () => {
     openDialog({
       component: LazyChecklistCreateChecklistDialog,
+      listeners: {
+        created: () => {
+          refresh();
+        }
+      }
+    });
+  };
+
+  const openCreateFromTemplateDialog = () => {
+    openDialog({
+      component: LazyChecklistCreateChecklistFromTemplateDialog,
       listeners: {
         created: () => {
           refresh();
