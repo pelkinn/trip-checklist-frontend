@@ -1,4 +1,4 @@
 User-Agent: *
 Disallow:
 
-Sitemap: https://trip-split.ru/sitemap.xml
+Sitemap: https://trip-checklist.ru/sitemap.xml
