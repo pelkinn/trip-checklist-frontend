@@ -12,30 +12,46 @@
         </p>
       </div>
 
-      <div v-if="pending" class="d-flex justify-center">
+      <div v-if="loadingTripTypes" class="d-flex justify-center">
         <VProgressCircular indeterminate />
       </div>
 
       <VCard v-else class="search" elevation="4">
-        <VAutocomplete
-          v-model="searchForm.tripTypeId"
-          :options="tripTypes"
-          label="Тип мероприятия"
-          :items="tripTypes"
-          item-value="id"
-          item-title="name"
-          :loading="loadingSearch"
-        />
+        <div class="d-flex flex-column gap-4">
+          <VAutocomplete
+            v-model="searchForm.tripTypeId"
+            :options="tripTypes"
+            label="Тип мероприятия"
+            :items="tripTypes"
+            item-value="id"
+            item-title="name"
+            :loading="loadingTripTypes"
+            class="mb-4"
+            @update:model-value="onTripTypeChange"
+          />
+          <VAutocomplete
+            v-model="searchForm.checklistId"
+            :items="availableChecklists"
+            label="Чеклист"
+            item-value="id"
+            :item-title="
+              (item) => (item.name ? `${item.name} (${item.itemsCount} пунктов)` : `${item.tripTypeName} (${item.itemsCount} пунктов)`)
+            "
+            :loading="loadingChecklists"
+            :disabled="!searchForm.tripTypeId"
+            @update:model-value="onChecklistChange"
+          />
+        </div>
       </VCard>
 
-      <div v-if="loadingSearch" class="d-flex justify-center">
+      <div v-if="loadingChecklists || loadingChecklistDetails" class="d-flex justify-center">
         <VProgressCircular indeterminate />
       </div>
 
-      <div v-else-if="checklistActive.items.length > 0">
+      <div v-else-if="checklistDetails">
         <VBtn :loading="loadingCreateChecklist" block class="mb-6" @click="createUserChecklist"> Скопировать к себе </VBtn>
         <VList class="mb-6">
-          <VListItem v-for="item in checklistActive?.items" :key="item.id" class="template-item">
+          <VListItem v-for="item in checklistDetails.items" :key="item.id" class="template-item">
             <span class="font-weight-medium">{{ item.name }}</span>
           </VListItem>
         </VList>
@@ -47,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { Item } from '~/types/checklist';
+  import type { Checklist, ChecklistByTripType } from '~/types/checklist';
 
   const checklistStore = useChecklistsStore();
   const { getTripTypes } = checklistStore;
@@ -55,7 +71,7 @@
 
   const { user } = storeToRefs(useUserStore());
 
-  const { pending } = await useLazyAsyncData(() => {
+  const { pending: loadingTripTypes } = await useLazyAsyncData(() => {
     return getTripTypes();
   });
 
@@ -64,30 +80,44 @@
   const services = useServices();
 
   const searchForm = ref({
-    tripTypeId: null
+    tripTypeId: null as number | null,
+    checklistId: null as number | null
   });
 
-  const loadingSearch = ref(false);
+  const loadingChecklists = ref(false);
+  const loadingChecklistDetails = ref(false);
+  const availableChecklists = ref<ChecklistByTripType[]>([]);
+  const checklistDetails = ref<Checklist | null>(null);
 
-  const checklistActive = ref<{ id: number; items: Item[] }>({
-    id: 0,
-    items: []
-  });
+  const onTripTypeChange = async (tripTypeId: number | null) => {
+    searchForm.value.checklistId = null;
+    availableChecklists.value = [];
+    checklistDetails.value = null;
 
-  const searchTemplate = async () => {
-    if (!searchForm.value.tripTypeId) return;
+    if (!tripTypeId) return;
 
-    loadingSearch.value = true;
-
+    loadingChecklists.value = true;
     try {
-      checklistActive.value = await services.checklist.getChecklist(searchForm.value.tripTypeId);
+      availableChecklists.value = await services.checklist.getChecklistsByTripType(tripTypeId);
     } catch {
-      checklistActive.value = {
-        id: 0,
-        items: []
-      };
+      availableChecklists.value = [];
     } finally {
-      loadingSearch.value = false;
+      loadingChecklists.value = false;
+    }
+  };
+
+  const onChecklistChange = async (checklistId: number | null) => {
+    checklistDetails.value = null;
+
+    if (!checklistId) return;
+
+    loadingChecklistDetails.value = true;
+    try {
+      checklistDetails.value = await services.checklist.getChecklist(checklistId);
+    } catch {
+      checklistDetails.value = null;
+    } finally {
+      loadingChecklistDetails.value = false;
     }
   };
 
@@ -99,11 +129,16 @@
       return;
     }
 
+    if (!searchForm.value.checklistId) {
+      showInfoToast('Выберите чеклист');
+      return;
+    }
+
     loadingCreateChecklist.value = true;
 
     try {
       const res = await services.checklist.createUserChecklist({
-        checklistId: checklistActive.value.id
+        checklistId: searchForm.value.checklistId
       });
       navigateTo(`/checklists/${res.id}`);
     } catch (err: any) {
@@ -122,13 +157,6 @@
       }
     ]
   });
-
-  watch(
-    () => searchForm.value.tripTypeId,
-    () => {
-      searchTemplate();
-    }
-  );
 </script>
 
 <style scoped>

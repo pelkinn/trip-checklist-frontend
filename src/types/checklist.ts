@@ -31,10 +31,6 @@ export interface TripType {
   name: string;
 }
 
-export interface GetTemplateChecklist {
-  tripTypeId: number;
-}
-
 export interface UserChecklistsResponse {
   userChecklists: UserChecklist[];
   total: number;
@@ -51,4 +47,18 @@ export interface UserChecklistItemBodyUpdate {
   customName?: string;
   isChecked?: boolean;
   order?: number;
+}
+
+export interface ChecklistByTripType {
+  id: number;
+  name: string | null;
+  tripTypeId: number;
+  tripTypeName: string;
+  itemsCount: number;
+}
+
+export interface Checklist {
+  id: number;
+  name: string | null;
+  items: Item[];
 }
