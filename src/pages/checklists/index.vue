@@ -2,7 +2,7 @@
   <div class="checklists-page">
     <VContainer>
       <div class="d-flex flex-column flex-md-row justify-space-between mb-10">
-        <h1 class="text-h4 mb-4 mb-md-0">Мои чеклисты</h1>
+        <h1 class="text-h4 mb-6 mb-md-15">Мои чеклисты</h1>
         <div class="d-flex flex-column flex-md-row gap-2">
           <VBtn class="mb-2 mb-md-0 mr-md-2" variant="outlined" @click="openCreateEmptyDialog">Создать пустой</VBtn>
           <VBtn color="primary" @click="openCreateFromTemplateDialog">Создать из шаблона</VBtn>
