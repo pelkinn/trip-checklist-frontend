@@ -50,7 +50,7 @@
     position: relative;
     grid-template-columns: 1fr;
     max-width: 1200px !important;
-    margin-top: 50px;
+    margin-top: 30px;
     justify-items: center;
 
     @media #{map.get(v.$display-breakpoints, 'lg-and-up')} {

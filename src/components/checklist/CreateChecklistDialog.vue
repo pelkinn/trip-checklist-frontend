@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
   import { useVuelidate } from '@vuelidate/core';
-  import { helpers, required } from '@vuelidate/validators';
+  import { helpers, maxLength, required } from '@vuelidate/validators';
   import { getErrorMessage } from '~/utils/validator';
 
   const emit = defineEmits<{
@@ -33,7 +33,8 @@
 
   const rules = computed(() => ({
     name: {
-      required: helpers.withMessage('Обязательное поле', required)
+      required: helpers.withMessage('Обязательное поле', required),
+      maxLength: helpers.withMessage('Максимум 200 символов', maxLength(200))
     }
   }));
 

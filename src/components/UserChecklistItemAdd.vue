@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VTextField ref="textFieldRef" v-model="name" density="compact" />
+    <VTextField ref="textFieldRef" v-model="name" label="Название" density="compact" />
     <div class="d-flex">
       <VBtn class="mr-2" density="compact" :loading="loading" @click="addItem">Сохранить</VBtn>
       <VBtn density="compact" variant="outlined" @click="emit('cancel')">Отменить</VBtn>
@@ -13,7 +13,6 @@
 
   const props = defineProps<{
     idChecklist: number;
-    order: number;
   }>();
 
   const emit = defineEmits<{
@@ -43,7 +42,7 @@
   const addItem = async () => {
     loading.value = true;
     try {
-      const item = await services.checklist.addUserChecklistItem(props.idChecklist, name.value, props.order);
+      const item = await services.checklist.addUserChecklistItem(props.idChecklist, name.value);
       emit('create', item);
     } catch (err: any) {
       console.log(err);

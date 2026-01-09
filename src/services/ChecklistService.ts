@@ -62,12 +62,12 @@ export class ChecklistService {
     });
   }
 
-  addUserChecklistItem(id: number, customName: string, order: number) {
+  addUserChecklistItem(id: number, customName: string, order?: number) {
     return this.api<UserChecklistItem>(`/user-checklist/${id}/items`, {
       method: 'post',
       body: {
         customName,
-        order
+        ...(order !== undefined && { order })
       }
     });
   }

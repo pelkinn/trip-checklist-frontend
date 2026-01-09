@@ -8,7 +8,7 @@
       <UserChecklistHeader
         :id-checklist="idChecklist"
         :title="checklist?.name || checklist!.nameTripType"
-        class="mb-15"
+        class="mb-6 mb-md-15"
         @change="(event: string) => (checklist!.name = event)"
       />
       <div class="grid">
@@ -17,17 +17,17 @@
             <div class="d-flex flex-md-column align-md-start justify-space-between mb-6 w-100">
               <div>
                 <VBtn
-                  :variant="checklist?.publicToken ? 'outlined' : undefined"
-                  :append-icon="checklist?.publicToken ? '' : mdiShare"
+                  :variant="checklist?.isPublic ? 'outlined' : undefined"
+                  :append-icon="checklist?.isPublic ? '' : mdiShare"
                   @click="togglePublic"
-                  >{{ checklist?.publicToken ? 'Закрыть доступ' : 'Поделиться' }}</VBtn
+                  >{{ checklist?.isPublic ? 'Закрыть доступ' : 'Поделиться' }}</VBtn
                 >
-                <p v-if="checklist?.publicToken" class="text-primary cursor-pointer mt-6" @click="copyLink">
+                <p v-if="checklist?.isPublic && checklist?.publicToken" class="text-primary cursor-pointer mt-6" @click="copyLink">
                   Копировать ссылку <VIcon :icon="mdiContentCopy" />
                 </p>
               </div>
 
-              <VBtn color="red" class="mt-0 mt-md-16" variant="tonal" :loading="loading" @click="removeChecklist">Удалить</VBtn>
+              <VBtn color="red" class="mt-0 mt-md-16" variant="tonal" @click="openDeleteDialog">Удалить</VBtn>
             </div>
             <p>
               Дата создания:
@@ -42,7 +42,7 @@
 
           <Draggable v-model="checklist!.items" group="people" :animation="150" item-key="id" handle=".drag-handle" @change="onListChange">
             <template #item="{ element: item, index }">
-              <div class="d-flex align-center">
+              <div class="d-flex align-center mb-2">
                 <VBtn :icon="mdiDragVertical" variant="text" density="compact" class="drag-handle" />
                 <UserChecklistItem
                   :id-checklist="idChecklist"
@@ -54,13 +54,14 @@
             </template>
           </Draggable>
 
-          <VBtn class="mt-4" :prepend-icon="mdiPlus" @click="visibilityFormAddItem = !visibilityFormAddItem">Добавить элемент</VBtn>
+          <VBtn v-if="!visibilityFormAddItem" class="mt-4" :prepend-icon="mdiPlus" @click="visibilityFormAddItem = !visibilityFormAddItem"
+            >Добавить элемент</VBtn
+          >
 
           <UserChecklistItemAdd
             v-if="visibilityFormAddItem"
             class="mt-6"
             :id-checklist="idChecklist"
-            :order="orderForCreate"
             @cancel="visibilityFormAddItem = false"
             @create="addItem"
           />
@@ -71,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+  import { LazyChecklistDeleteChecklistDialog } from '#components';
   import { mdiContentCopy, mdiDragVertical, mdiPlus, mdiShare } from '@mdi/js';
   import Draggable from 'vuedraggable';
   import type { UserChecklistItem } from '~/types/checklist';
@@ -83,6 +85,8 @@
 
   const { showSuccessToast } = useToast();
 
+  const { openDialog } = useDialog();
+
   const route = useRoute();
 
   const idChecklist = computed(() => Number(route.params.id));
@@ -92,6 +96,15 @@
   });
 
   const loading = ref(false);
+
+  const openDeleteDialog = () => {
+    openDialog({
+      component: LazyChecklistDeleteChecklistDialog,
+      listeners: {
+        confirm: removeChecklist
+      }
+    });
+  };
 
   const removeChecklist = async () => {
     loading.value = true;
@@ -152,8 +165,6 @@
   };
 
   const visibilityFormAddItem = ref(false);
-
-  const orderForCreate = computed(() => checklist.value!.items.length + 1);
 </script>
 
 <style scoped lang="scss">
@@ -163,7 +174,7 @@
     gap: 16px;
 
     @media #{map.get(v.$display-breakpoints, 'md-and-up')} {
-      grid-template-columns: minmax(100px, 500px) 500px;
+      grid-template-columns: minmax(100px, 500px) 600px;
     }
   }
 

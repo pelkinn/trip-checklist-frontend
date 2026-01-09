@@ -2,7 +2,7 @@
   <VContainer class="container">
     <div class="d-flex flex-column align-center">
       <div class="welcome-content">
-        <h1 class="text-primary">Персональные чеклисты для путешествий</h1>
+        <h1 class="text-primary text-h4 mb-2">Персональные чеклисты для путешествий</h1>
         <p>
           {{
             user

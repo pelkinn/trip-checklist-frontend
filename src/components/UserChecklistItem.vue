@@ -66,7 +66,7 @@
   .grid-item {
     display: grid;
     grid-template-columns: minmax(min-content, 1fr) 50px;
-    gap: 16px;
+    gap: 24px;
     flex-grow: 1;
     align-items: center;
   }

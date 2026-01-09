@@ -23,7 +23,22 @@
         @click:append-inner="showPasswordRepeat = !showPasswordRepeat"
       />
 
-      <VBtn color="secondary" :loading="loading" type="submit" block> Зарегистрироваться </VBtn>
+      <VCheckbox
+        v-model="v$.consentAccepted.$model"
+        :error-messages="getErrorMessage(v$.consentAccepted)"
+        class="mt-2"
+      >
+        <template #label>
+          <span class="text-body-2">
+            Я согласен на
+            <NuxtLink to="/privacy" target="_blank" class="text-primary text-decoration-none">
+              обработку персональных данных
+            </NuxtLink>
+          </span>
+        </template>
+      </VCheckbox>
+
+      <VBtn color="secondary" :loading="loading" type="submit" block class="mt-4"> Зарегистрироваться </VBtn>
     </VForm>
 
     <VDivider class="my-6" />
@@ -56,7 +71,8 @@
   const form = ref({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    consentAccepted: false
   });
 
   const loading = ref(false);
@@ -75,6 +91,9 @@
       required: helpers.withMessage('Обязательное поле', required),
       sameAs: helpers.withMessage('Пароли не совпадают', sameAs(form.value.password)),
       containsDigit: helpers.withMessage('Минимум одна цифра', containsDigit)
+    },
+    consentAccepted: {
+      required: helpers.withMessage('Необходимо согласие на обработку персональных данных', (value) => !!value)
     }
   }));
 
@@ -89,7 +108,8 @@
     try {
       await services.auth.register({
         email: form.value.email,
-        password: form.value.password
+        password: form.value.password,
+        consentAccepted: form.value.consentAccepted
       });
       openDialogSuccess();
     } catch (err: any) {

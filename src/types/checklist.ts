@@ -17,6 +17,7 @@ export interface UserChecklist {
   updatedAt: string | null;
   nameTripType: string;
   publicToken: string | null;
+  isPublic: boolean;
   items: UserChecklistItem[];
   name: string;
 }

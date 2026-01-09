@@ -6,6 +6,7 @@ export interface Login {
 export interface Register {
   email: string;
   password: string;
+  consentAccepted: boolean;
 }
 
 export interface ForgotPassword {
