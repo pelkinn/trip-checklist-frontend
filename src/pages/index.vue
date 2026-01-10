@@ -20,7 +20,6 @@
         <div class="d-flex flex-column gap-4">
           <VAutocomplete
             v-model="searchForm.tripTypeId"
-            :options="tripTypes"
             label="Тип поездки"
             :items="tripTypes"
             item-value="id"
@@ -63,6 +62,9 @@
 <script setup lang="ts">
   import type { Checklist, ChecklistByTripType } from '~/types/checklist';
 
+  const route = useRoute();
+  const router = useRouter();
+
   const checklistStore = useChecklistsStore();
   const { getTripTypes } = checklistStore;
   const { tripTypes } = storeToRefs(checklistStore);
@@ -87,13 +89,55 @@
   const availableChecklists = ref<ChecklistByTripType[]>([]);
   const checklistDetails = ref<Checklist | null>(null);
 
-  const onTripTypeChange = async (tripTypeId: number | null) => {
-    searchForm.value.checklistId = null;
-    availableChecklists.value = [];
-    checklistDetails.value = null;
+  // Обновление URL при изменении формы
+  const updateUrl = () => {
+    const query: Record<string, string> = {};
+    if (searchForm.value.tripTypeId) {
+      query.tripType = String(searchForm.value.tripTypeId);
+    }
+    if (searchForm.value.checklistId) {
+      query.checklist = String(searchForm.value.checklistId);
+    }
 
-    if (!tripTypeId) return;
+    router.replace({
+      query: Object.keys(query).length > 0 ? query : undefined
+    });
+  };
 
+  // Инициализация формы из URL
+  const initializeFromUrl = async () => {
+    // Получаем значения из query, обрабатывая массивы
+    const tripTypeIdParam = Array.isArray(route.query.tripType) ? route.query.tripType[0] : route.query.tripType;
+    const checklistIdParam = Array.isArray(route.query.checklist) ? route.query.checklist[0] : route.query.checklist;
+
+    if (!tripTypeIdParam && !checklistIdParam) return;
+
+    try {
+      if (tripTypeIdParam) {
+        const tripTypeId = Number(tripTypeIdParam);
+        if (!isNaN(tripTypeId)) {
+          // Устанавливаем ID типа поездки и загружаем чеклисты
+          searchForm.value.tripTypeId = tripTypeId;
+          await loadChecklistsByTripType(tripTypeId);
+
+          // После загрузки чеклистов проверяем checklistId из URL
+          if (checklistIdParam) {
+            const checklistId = Number(checklistIdParam);
+            if (!isNaN(checklistId)) {
+              // Устанавливаем checklistId и загружаем детали
+              searchForm.value.checklistId = checklistId;
+              await loadChecklistDetails(checklistId);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error initializing from URL:', err);
+    }
+  };
+
+  // Загрузка чеклистов по типу поездки
+  const loadChecklistsByTripType = async (tripTypeId: number) => {
     loadingChecklists.value = true;
     try {
       availableChecklists.value = await services.checklist.getChecklistsByTripType(tripTypeId);
@@ -104,11 +148,8 @@
     }
   };
 
-  const onChecklistChange = async (checklistId: number | null) => {
-    checklistDetails.value = null;
-
-    if (!checklistId) return;
-
+  // Загрузка деталей чеклиста
+  const loadChecklistDetails = async (checklistId: number) => {
     loadingChecklistDetails.value = true;
     try {
       checklistDetails.value = await services.checklist.getChecklist(checklistId);
@@ -118,6 +159,55 @@
       loadingChecklistDetails.value = false;
     }
   };
+
+  const onTripTypeChange = async (tripTypeId: number | null) => {
+    searchForm.value.checklistId = null;
+    availableChecklists.value = [];
+    checklistDetails.value = null;
+
+    updateUrl();
+
+    if (!tripTypeId) {
+      return;
+    }
+
+    await loadChecklistsByTripType(tripTypeId);
+  };
+
+  const onChecklistChange = async (checklistId: number | null) => {
+    checklistDetails.value = null;
+
+    updateUrl();
+
+    if (!checklistId) {
+      return;
+    }
+
+    await loadChecklistDetails(checklistId);
+  };
+
+  // Инициализация из URL один раз при загрузке страницы
+  const isInitialized = ref(false);
+
+  if (route.query.tripType || route.query.checklist) {
+    if (!loadingTripTypes.value) {
+      // Типы уже загружены (из кеша), инициализируем сразу
+      isInitialized.value = true;
+      await initializeFromUrl();
+    } else {
+      // Ждем загрузки типов
+      watch(
+        () => loadingTripTypes.value,
+        async (isLoading) => {
+          if (!isLoading && !isInitialized.value) {
+            isInitialized.value = true;
+            await initializeFromUrl();
+          }
+        },
+        { immediate: true }
+      );
+    }
+  }
 
   const loadingCreateChecklist = ref(false);
 
